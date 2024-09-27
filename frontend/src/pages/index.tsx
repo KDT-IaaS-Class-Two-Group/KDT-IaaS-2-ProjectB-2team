@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 
 interface Response {
   Hello: string,
-  message? :string
+  message? :object
+  species? :string
+
 }
 
 const Hello = () => {
@@ -16,6 +18,7 @@ const Hello = () => {
       try {
         const res = await fetch('http://127.0.0.1:8000/');
         const data = await res.json()
+        console.log(data)
         setMessage(data)
       } catch (error) {
         console.log(error)
@@ -43,7 +46,7 @@ const eventhandle = async () => {
     // GET 요청 보내기
     try {
       const response = await fetch(`http://127.0.0.1:8000/${idValue}`, {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -66,7 +69,14 @@ const eventhandle = async () => {
   return (
     <div id="root">
       <div id="killingfield">
-        <h1>Hello, {message.message ? message.message : message.Hello }</h1>
+        {/* <h1>Hello, {message.message ? message.message : message.Hello }</h1> */}
+        <div>
+          <h1>공격력: {message.Hello}</h1>
+          <h1></h1>
+          <h1></h1>
+          <h1></h1>
+          <h1></h1>
+        </div>
         <div>
           <button type="button" onClick={eventhandle}>버튼</button>
         </div>
