@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
 
-
-interface Response {
-  Hello: string,
-  message? :object
-  species? :string
-
-}
-
 const Hello = () => {
-  const [message,setMessage] = useState<Response>({Hello : ""})
+  const [message,setMessage] = useState<string>("")
+  const [message2,setMessage2] = useState<string>("")
+  const [message3,setMessage3] = useState<string>("")
+  const [message4,setMessage4] = useState<string>("")
+  const [message5,setMessage5] = useState<string>("")
 
   console.log(message)
 
@@ -18,20 +14,13 @@ const Hello = () => {
       try {
         const res = await fetch('http://127.0.0.1:8000/');
         const data = await res.json()
-        console.log(data)
-        setMessage(data)
+        setMessage(data.message)
       } catch (error) {
         console.log(error)
       }
     }
     fetchData()
   },[]);
-
-
-  
-// 클릭 이벤트가 발생하면 콘솔에 숫자 1이 나타나게 
-// id = "root"안에 있는 첫번째 div의 id를 찾아서 나타나게 
-// 이제 이 id값을 fetch로 위에 http://127.0.0.1:8000으로 보내는 코드를 만든다.
 
 const eventhandle = async () => {
 
@@ -52,10 +41,14 @@ const eventhandle = async () => {
         },
       });
 
-      const responseData = await response.json(); // 응답 데이터 받아오기
-      console.log('Response from server:', responseData);
-      console.log(responseData.message)
-      setMessage(responseData)
+      const responseData1 = await response.json(); // 응답 데이터 받아오기
+
+      console.log(responseData1.message.attack)
+      setMessage(responseData1.message.attack || "메시지가 없습니다.")
+      setMessage2(responseData1.message.defense || "메시지가 없습니다.")
+      setMessage3(responseData1.message.accuracy || "메시지가 없습니다.")
+      setMessage4(responseData1.message.weight || "메시지가 없습니다.")
+      setMessage5(responseData1.message.img || "메시지가 없습니다.")
 
     } catch (error) {
       console.log('Error sending id:', error);
@@ -64,19 +57,17 @@ const eventhandle = async () => {
   
 };
 
-
+console.log(message)
+console.log(typeof(message))
 
   return (
     <div id="root">
       <div id="killingfield">
-        {/* <h1>Hello, {message.message ? message.message : message.Hello }</h1> */}
-        <div>
-          <h1>공격력: {message.Hello}</h1>
-          <h1></h1>
-          <h1></h1>
-          <h1></h1>
-          <h1></h1>
-        </div>
+        <h1>공격력, {message}</h1> 
+        <h1>방어력, {message2}</h1>
+        <h1>명중률, {message3}</h1>
+        <h1>체력, {message4}</h1>
+        <h1>이미지, {message5}</h1>
         <div>
           <button type="button" onClick={eventhandle}>버튼</button>
         </div>
