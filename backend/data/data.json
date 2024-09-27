@@ -1,0 +1,8 @@
+{
+	"species" : 1, 
+ "img": "images\\cat-zingano.png", 
+ "attack": "2.57", 
+ "defense": "1.63", 
+ "accuracy": "61%", 
+ "weight" : "100lb" 
+}
