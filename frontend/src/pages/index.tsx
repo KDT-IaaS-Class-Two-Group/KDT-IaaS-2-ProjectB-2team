@@ -7,16 +7,16 @@ const Hello = () => {
   const [message4,setMessage4] = useState<string>("")
   const [message5,setMessage5] = useState<string>("")
 
-  console.log(message)
+  console.log(message);
 
-  useEffect(()=>{
-    const fetchData = async()=>{
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         const res = await fetch('http://127.0.0.1:8000/');
         const data = await res.json()
         setMessage(data.message)
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
     fetchData()
@@ -26,11 +26,11 @@ const eventhandle = async () => {
 
   console.log("1");
 
-  const killingFieldDiv = document.getElementById('killingfield');
-  
-  if (killingFieldDiv) {
-    const idValue = killingFieldDiv.id;
-    console.log(idValue); // "killingfield"를 콘솔에 출력합니다.
+    const killingFieldDiv = document.getElementById("killingfield");
+
+    if (killingFieldDiv) {
+      const idValue = killingFieldDiv.id;
+      console.log(idValue); // "killingfield"를 콘솔에 출력합니다.
 
     // GET 요청 보내기
     try {
@@ -69,7 +69,9 @@ console.log(typeof(message))
         <h1>체력, {message4}</h1>
         <h1>이미지, {message5}</h1>
         <div>
-          <button type="button" onClick={eventhandle}>버튼</button>
+          <button type="button" onClick={eventhandle}>
+            버튼
+          </button>
         </div>
       </div>
     </div>
