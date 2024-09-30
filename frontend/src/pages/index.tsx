@@ -1,77 +1,83 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+interface Response {
+  species: number;
+  attack: string;
+  defense: string;
+  accuracy: string;
+  weight: string;
+}
 
 const Hello = () => {
-  const [message,setMessage] = useState<string>("")
-  const [message2,setMessage2] = useState<string>("")
-  const [message3,setMessage3] = useState<string>("")
-  const [message4,setMessage4] = useState<string>("")
-  const [message5,setMessage5] = useState<string>("")
+  const [message, setMessage] = useState<Response | null>(null); //데이터 받기
+  const [loading, setLoading] = useState<boolean>(false); //로딩
+  const [error, setError] = useState<string | null>(null); //에러
+  const [image, setImage] = useState<File | null>(null); //이미지 처리 
 
-  console.log(message);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch('http://127.0.0.1:8000/');
-        const data = await res.json()
-        setMessage(data.message)
-      } catch (error) {
-        console.log(error);
-      }
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      setImage(file);
+      setError(null); // 오류 초기화
     }
-    fetchData()
-  },[]);
+  };
 
-const eventhandle = async () => {
+  const handleSubmit = async () => {
+    if (!image) {
+      setError("이미지를 먼저 선택해주세요.");
+      return;
+    }
 
-  console.log("1");
+    setLoading(true);
+    setError(null); // 이전 오류 초기화
+    const formData = new FormData();
+    formData.append("file", image);
 
-    const killingFieldDiv = document.getElementById("killingfield");
-
-    if (killingFieldDiv) {
-      const idValue = killingFieldDiv.id;
-      console.log(idValue); // "killingfield"를 콘솔에 출력합니다.
-
-    // GET 요청 보내기
     try {
-      const response = await fetch(`http://127.0.0.1:8000/${idValue}`, {
+      const response = await fetch(`http://127.0.0.1:8000/predict`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        body: formData,
       });
 
-      const responseData1 = await response.json(); // 응답 데이터 받아오기
+      if (!response.ok) {
+        throw new Error('응답이 올바르지 않음');
+      }
 
-      console.log(responseData1.message.attack)
-      setMessage(responseData1.message.attack || "메시지가 없습니다.")
-      setMessage2(responseData1.message.defense || "메시지가 없습니다.")
-      setMessage3(responseData1.message.accuracy || "메시지가 없습니다.")
-      setMessage4(responseData1.message.weight || "메시지가 없습니다.")
-      setMessage5(responseData1.message.img || "메시지가 없습니다.")
-
-    } catch (error) {
-      console.log('Error sending id:', error);
+      const responseData = await response.json();
+      setMessage(responseData);
+      
+    } catch (error : unknown) {
+      if (error instanceof Error) {
+        setError("이미지 전송 중 오류 발생: " + error.message);
+      } else {
+        setError("알 수 없는 오류 발생");
+      }
+    } finally {
+      setLoading(false);
     }
-  }
-  
-};
-
-console.log(message)
-console.log(typeof(message))
+  };
 
   return (
     <div id="root">
-      <div id="killingfield">
-        <h1>공격력, {message}</h1> 
-        <h1>방어력, {message2}</h1>
-        <h1>명중률, {message3}</h1>
-        <h1>체력, {message4}</h1>
-        <h1>이미지, {message5}</h1>
+      <div >
+        <h2>이미지 업로드</h2>
+        <input type="file" placeholder="이미지 업로드" accept="image/*" onChange={handleImageChange} />
+      </div>
+
+      <div >
+        {loading && <p>로딩 중...</p>}
+        {error && <p>{error}</p>}
+        {message && (
+          <>
+            <h1>인종: {message.species}</h1>
+            <h1>공격력: {message.attack}</h1>
+            <h1>방어력: {message.defense}</h1>
+            <h1>명중률: {message.accuracy}</h1>
+            <h1>무게: {message.weight}</h1>
+          </>
+        )}
         <div>
-          <button type="button" onClick={eventhandle}>
-            버튼
-          </button>
+          <button type="button" onClick={handleSubmit}>이미지 전송</button>
         </div>
       </div>
     </div>
