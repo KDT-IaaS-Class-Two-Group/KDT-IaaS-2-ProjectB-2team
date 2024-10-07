@@ -1,5 +1,5 @@
-import gym
-from gym import spaces
+import gymnasium as gym  # Gym 대신 Gymnasium을 사용
+from gymnasium import spaces
 import numpy as np
 import math
 
@@ -24,10 +24,12 @@ class CustomSurvivalEnv(gym.Env):
         self.risk_factor = None
         self.reset()
 
-    def reset(self):
+    def reset(self, seed=None, options=None):
         """
         환경을 초기 상태로 재설정합니다. 이 메서드는 매 에피소드가 시작될 때 호출됩니다.
         """
+        super().reset(seed=seed)  # Gymnasium에서 seed를 사용하여 재설정할 수 있습니다.
+
         self.state = {
             "hp": np.random.randint(50, 101),  # 초기 체력: 50~100 사이의 무작위 값
             "attack": np.random.uniform(1.0, 3.0),  # 초기 공격력
@@ -43,7 +45,7 @@ class CustomSurvivalEnv(gym.Env):
         # 위험 요소: 시그모이드 함수를 사용하여 위험 요소의 조우 확률을 설정합니다.
         self.risk_factor = self.calculate_risk_factor(self.populationRate)
 
-        return np.array(list(self.state.values()), dtype=np.float32)
+        return np.array(list(self.state.values()), dtype=np.float32), {}  # Gymnasium에서는 (obs, info) 형태로 반환
 
     def calculate_risk_factor(self, populationRate):
         """
@@ -72,9 +74,10 @@ class CustomSurvivalEnv(gym.Env):
 
         # 종료 조건: HP가 0이 되거나 식량이 모두 소진된 경우
         done = self.state["hp"] <= 0 or self.food <= 0
+        truncated = False  # Gymnasium에서는 truncated 값을 추가해야 합니다.
 
         new_state = np.array(list(self.state.values()), dtype=np.float32)  # 새로운 상태 반환
-        return new_state, reward, done, {}
+        return new_state, reward, done, truncated, {}  # Gymnasium에서는 (obs, reward, done, truncated, info) 형태로 반환
 
     def calculate_reward(self, action, success):
         """
