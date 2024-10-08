@@ -8,8 +8,8 @@ class CustomSurvivalEnv(gym.Env):
         super(CustomSurvivalEnv, self).__init__()
 
         self.observation_space = spaces.Box(
-            low=np.array([0, 0, 0, 0, 0, 0, 0, 0]), 
-            high=np.array([100, 10, 10, 100, 200, 10, 10, 1]), 
+            low=np.array([0, 0, 0, 0, 0, 0]), 
+            high=np.array([100, 10, 10, 100, 200, 10]), 
             dtype=np.float32
         )
         
@@ -18,8 +18,7 @@ class CustomSurvivalEnv(gym.Env):
         self.populationRate = populationRate
         self.state = None
         self.food = None
-        self.sound_probability = 0.1
-        self.zombie_encounter = False
+        self.risk_factor = None
         self.reset()
 
     def reset(self, seed=None, options=None):
@@ -31,43 +30,31 @@ class CustomSurvivalEnv(gym.Env):
             "defense": np.random.uniform(1.0, 3.0),
             "accuracy": np.random.randint(50, 101),
             "weight": np.random.uniform(50, 150),
-            "agility": np.random.uniform(0, 10),
-            "sound": 0,
-            "zombie": 0
+            "agility": np.random.uniform(0, 10)
         }
 
-        self.food = 3 + int(self.populationRate / 10)  
+        self.food = 100 * (1 + self.populationRate / 100)
+        self.risk_factor = self.calculate_risk_factor(self.populationRate)
+
         return np.array(list(self.state.values()), dtype=np.float32), {}
+
+    def calculate_risk_factor(self, populationRate):
+        return 1 / (1 + math.exp(-0.1 * (populationRate - 50)))
 
     def step(self, action):
         success = False
-        self.zombie_encounter = False
-        self.state["sound"] = 0
+        zombie_encounter_chance = self.calculate_zombie_encounter_chance()
 
         if action == 0:  
-            if np.random.rand() < 0.6:
+            if np.random.rand() > zombie_encounter_chance:
                 success = True
                 self.food += 1
-                if np.random.rand() < 0.05:
-                    self.state["hp"] = min(100, self.state["hp"] + 50)
-            else:
-                if np.random.rand() < 0.3:
-                    self.zombie_encounter = True
 
         elif action == 1:  
             self.state["hp"] = min(100, self.state["hp"] + 10)
-            if np.random.rand() < self.sound_probability:
-                self.state["sound"] = 1
-                if np.random.rand() < (0.5 + (self.sound_probability * 5)): 
-                    self.zombie_encounter = True
-
-            if not self.zombie_encounter:
-                success = True
-
-        if self.zombie_encounter:
-            fight_result = self._fight_zombie()
-            if not fight_result:
-                self.state["hp"] = max(0, self.state["hp"] - 10)
+            if np.random.rand() < 0.05:
+                if np.random.rand() < 0.5:
+                    success = False
 
         reward = self.calculate_reward(action, success)
 
@@ -81,15 +68,10 @@ class CustomSurvivalEnv(gym.Env):
 
         return new_state, reward, done, truncated, {}
 
-    def _fight_zombie(self):
-        player_attack = self.state["attack"]
-        player_defense = self.state["defense"]
-        player_accuracy = self.state["accuracy"]
-
-        zombie_attack = np.random.uniform(2.0, 5.0)
-        zombie_defense = np.random.uniform(1.0, 4.0)
-
-        return player_accuracy * player_attack > zombie_attack * zombie_defense
+    def calculate_zombie_encounter_chance(self):
+        base_chance = self.risk_factor
+        weight_penalty = max(0, (self.state["weight"] - 70) // 10) * 0.05
+        return base_chance + weight_penalty
 
     def calculate_reward(self, action, success):
         reward = -1
@@ -100,7 +82,7 @@ class CustomSurvivalEnv(gym.Env):
         return reward
 
     def render(self):
-        print(f"State: {self.state}, Food: {self.food}, Zombie Encounter: {self.zombie_encounter}")
+        print(f"State: {self.state}, Food: {self.food}, Risk Factor: {self.risk_factor}")
 
     def close(self):
         pass
