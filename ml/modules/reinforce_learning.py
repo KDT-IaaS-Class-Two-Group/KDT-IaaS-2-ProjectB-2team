@@ -2,6 +2,7 @@ import gym
 from gym import spaces
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 from colorama import Fore, Style, init
 
 # Windows 콘솔을 위한 colorama 초기화
@@ -169,16 +170,27 @@ class CustomSurvivalEnv(gym.Env):
 
 if __name__ == "__main__":
     env = CustomSurvivalEnv()  # 환경 초기화
-    obs = env.reset()  # 환경 초기화 및 첫 번째 상태 받기
 
-    done = False
-    total_reward = 0
+    episodes = 500  # 에피소드 수
+    total_rewards = []  # 각 에피소드에서의 총 보상 기록
+    for _ in range(episodes):
+        obs = env.reset()  # 환경 초기화 및 첫 번째 상태 받기
+        done = False
+        total_reward = 0  # 에피소드 당 총 보상 초기화
 
-    while not done:
-        env.render()  # 현재 상태 출력
-        action = env.action_space.sample()  # 무작위로 행동 선택
-        obs, reward, done, info = env.step(action)  # 행동 후 상태, 보상, 종료 여부 확인
-        total_reward += reward  # 보상 누적
+        while not done:
+            action = env.action_space.sample()  # 무작위로 행동 선택
+            obs, reward, done, info = env.step(action)  # 행동 후 상태, 보상, 종료 여부 확인
+            total_reward += reward  # 보상 누적
 
-    env.close()  # 환경 종료
-    print(f"총 보상: {total_reward}")
+        env.close()  # 환경 종료
+        total_rewards.append(total_reward)  # 에피소드 총 보상 기록
+
+    # 보상 시각화
+    plt.plot(total_rewards, marker='o')
+    plt.title("Total Rewards Over Episodes")
+    plt.xlabel("Episode")
+    plt.ylabel("Total Reward")
+    plt.xticks(np.arange(episodes))
+    plt.grid()
+    plt.show()
