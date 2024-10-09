@@ -2,6 +2,11 @@ import gymnasium as gym  # Gym 대신 Gymnasium을 사용
 from gymnasium import spaces
 import numpy as np
 import math
+import matplotlib.pyplot as plt
+from colorama import Fore, Style, init
+
+# Windows 콘솔을 위한 colorama 초기화
+init(autoreset=True)
 
 class CustomSurvivalEnv(gym.Env):
     def __init__(self, populationRate=50):
@@ -112,7 +117,34 @@ class CustomSurvivalEnv(gym.Env):
         print(f"State: {self.state}, Food: {self.food}, Risk Factor: {self.risk_factor}")
 
     def close(self):
-        """
-        환경 종료 시 호출됩니다.
-        """
-        pass
+        print(f"에피소드 종료! {self.turns_survived} 턴 생존.")
+        print(f"종료 원인: {self.end_reason}")
+        print(f"총 획득한 음식: {self.food_acquired}, 총 획득한 의약품: {self.medicine_acquired}")
+        print(f"능력치 증가량: {self.stat_increases}")
+
+if __name__ == "__main__":
+    env = CustomSurvivalEnv()  # 환경 초기화
+
+    episodes = 500  # 에피소드 수
+    total_rewards = []  # 각 에피소드에서의 총 보상 기록
+    for _ in range(episodes):
+        obs = env.reset()  # 환경 초기화 및 첫 번째 상태 받기
+        done = False
+        total_reward = 0  # 에피소드 당 총 보상 초기화
+
+        while not done:
+            action = env.action_space.sample()  # 무작위로 행동 선택
+            obs, reward, done, info = env.step(action)  # 행동 후 상태, 보상, 종료 여부 확인
+            total_reward += reward  # 보상 누적
+
+        env.close()  # 환경 종료
+        total_rewards.append(total_reward)  # 에피소드 총 보상 기록
+
+    # 보상 시각화
+    plt.plot(total_rewards, marker='o')
+    plt.title("Total Rewards Over Episodes")
+    plt.xlabel("Episode")
+    plt.ylabel("Total Reward")
+    plt.xticks(np.arange(episodes))
+    plt.grid()
+    plt.show()
