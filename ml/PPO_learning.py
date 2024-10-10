@@ -20,7 +20,7 @@ loaded_model = PPO.load("ppo_custom_survival_model2")
 
 # 시뮬레이션 실행 및 보상 기록
 total_rewards = []  # 에피소드별 총 보상을 기록하기 위한 리스트
-num_episodes = 100  # 실행할 총 에피소드 수
+num_episodes = 10000  # 실행할 총 에피소드 수
 
 for episode in range(num_episodes):
     obs, info = env.reset()  # Gymnasium에서는 reset() 함수가 (obs, info)를 반환합니다.
