@@ -26,18 +26,19 @@ class CustomSurvivalEnv(gym.Env):
         super().reset(seed=seed)
         
         self.state = {
-            "hp": np.random.randint(50, 101),  # 플레이어 체력 50~100
-            "attack": np.random.uniform(1.0, 3.0),  # 공격력 1.0~3.0
+            "hp": np.random.randint(70, 101),  # 플레이어 체력 50~100
+            "attack": np.random.uniform(5.0, 10.0),  # 공격력 1.0~3.0
             "defense": np.random.uniform(1.0, 3.0),  # 방어력 1.0~3.0
-            "accuracy": np.random.randint(50, 101),  # 정확도 50~100
-            "weight": np.random.uniform(50, 150),  # 무게 50~150
-            "agility": np.random.uniform(0, 10)  # 민첩성 0~10
+            "accuracy": np.random.randint(70, 101),  # 정확도 50~100
+            "weight": np.random.uniform(60, 140),  # 무게 50~150
+            "agility": np.random.uniform(1, 10)  # 민첩성 0~10
         }
 
         self.zombie = {  # 좀비 능력치 설정 
-            "hp": np.random.randint(30, 51),  
-            "attack": np.random.uniform(3.0, 5.0),  
-            "defense": np.random.uniform(0.5, 1.0),  
+            "hp": np.random.randint(20, 51),  
+            "attack": np.random.uniform(1.0, 2.0),  
+            "defense": np.random.uniform(0.5, 1.0), 
+            "accuracy": np.random.randint(40, 70), 
         }
         
         self.food = 5  # 식량은 5개로 초기화
@@ -133,16 +134,37 @@ class CustomSurvivalEnv(gym.Env):
 
     def fight_zombie(self):
         """좀비와 전투를 처리하는 메서드"""
-        player_power = self.state["attack"] * self.state["accuracy"]
-        zombie_power = self.zombie["attack"] * self.zombie["defense"]
-        
-        if player_power > zombie_power:
-            print("전투에서 승리했습니다!")
+        for turn in range(10):  # 10회 공격 주고받기
+            # 플레이어의 공격
+            if np.random.rand() < (self.state["accuracy"] / 100):  # 공격 성공 확률
+                damage = max(0, self.state["attack"] - self.zombie["defense"])  # 최종 데미지 계산
+                self.zombie["hp"] -= damage  # 좀비 HP 감소
+                print(f"플레이어가 좀비를 공격! 좀비에게 {damage} 피해를 입혔습니다.")
+            else:
+                print("플레이어의 공격이 빗나갔습니다.")
+            
+            # 좀비의 공격
+            if self.zombie["hp"] > 0:  # 좀비가 아직 살아있을 경우
+                if np.random.rand() < (self.zombie["accuracy"] / 100):  # 공격 성공 확률
+                    damage = max(0, self.zombie["attack"] - self.state["defense"])  # 최종 데미지 계산
+                    self.state["hp"] -= damage  # 플레이어 HP 감소
+                    print(f"좀비가 플레이어를 공격! 플레이어에게 {damage} 피해를 입혔습니다.")
+                else:
+                    print("좀비의 공격이 빗나갔습니다.")
+
+        # 10회 공격 후 좀비가 살아있다면 플레이어 체력 5 감소
+        if self.zombie["hp"] > 0:
+            self.state["hp"] -= 5
+            print("좀비가 살아남았습니다! 플레이어의 체력이 5 감소합니다.")
+
+        # 좀비가 죽었다면 승리 메시지 출력
+        if self.zombie["hp"] <= 0:
+            print("좀비를 처치했습니다!")
         else:
-            print("전투에서 패배했습니다!")
-            self.state["hp"] -= 20  # 패배 시 체력 감소
+            # 플레이어의 체력이 0 이하인지 확인
             if self.state["hp"] <= 0:
                 print("플레이어가 사망했습니다.")
+
 
     def calculate_reward(self, action, success):
         reward = 1
@@ -155,7 +177,7 @@ class CustomSurvivalEnv(gym.Env):
         elif action == 1:  # 휴식
             reward += 2 if self.state["hp"] < 50 else 1
         elif action == 2:  # 거점 이동
-            reward += 5  # 의약품 획득 보상
+            reward += 10  # 의약품 획득 보상
             
         # 식량 소비
         self.food -= 1
