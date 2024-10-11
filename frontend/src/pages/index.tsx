@@ -1,87 +1,23 @@
-import { useState } from "react";
+import React from 'react';
 
-interface Response {
-  species: number;
-  attack: string;
-  defense: string;
-  accuracy: string;
-  weight: string;
-}
-
-const Hello = () => {
-  const [message, setMessage] = useState<Response | null>(null); //데이터 받기
-  const [loading, setLoading] = useState<boolean>(false); //로딩
-  const [error, setError] = useState<string | null>(null); //에러
-  const [image, setImage] = useState<File | null>(null); //이미지 처리 
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) {
-      setImage(file);
-      setError(null); // 오류 초기화
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!image) {
-      setError("이미지를 먼저 선택해주세요.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null); // 이전 오류 초기화
-    const formData = new FormData();
-    formData.append("file", image);
-
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/predict`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('응답이 올바르지 않음');
-      }
-
-      const responseData = await response.json();
-      setMessage(responseData);
-      
-    } catch (error : unknown) {
-      if (error instanceof Error) {
-        setError("이미지 전송 중 오류 발생: " + error.message);
-      } else {
-        setError("알 수 없는 오류 발생");
-      }
-    } finally {
-      setLoading(false);
-    }
+const MainPage: React.FC = () => {
+  const handleStartClick = () => {
+    window.location.href = '/UserPage';
   };
 
   return (
     <div id="root">
-      <div >
-        <h2>이미지 업로드</h2>
-        <input type="file" placeholder="이미지 업로드" accept="image/*" onChange={handleImageChange} />
+      <div>
+        <h1>Zom 이상하다고 생각은 했지만<br/>Bi 상사태가 발생했습니다.</h1>
       </div>
-
-      <div >
-        {loading && <p>로딩 중...</p>}
-        {error && <p>{error}</p>}
-        {message && (
-          <>
-            <h1>인종: {message.species}</h1>
-            <h1>공격력: {message.attack}</h1>
-            <h1>방어력: {message.defense}</h1>
-            <h1>명중률: {message.accuracy}</h1>
-            <h1>무게: {message.weight}</h1>
-          </>
-        )}
-        <div>
-          <button type="button" onClick={handleSubmit}>이미지 전송</button>
-        </div>
+      <div>
+        <p>이미지분석시뮬레이션모델 머신러닝 투 좀비 이거 보여주려고 어그로 끌었다 좀비 실화냐?</p> 
+      </div>
+      <div>
+        <button onClick={handleStartClick}>시작</button>
       </div>
     </div>
   );
 };
 
-export default Hello;
+export default MainPage;
