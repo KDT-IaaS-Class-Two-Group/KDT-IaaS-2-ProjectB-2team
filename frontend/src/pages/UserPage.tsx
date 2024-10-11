@@ -30,21 +30,25 @@ const UserPage: React.FC = () => {
       body: formData,
     });
 
-    window.location.href = '/predict'; // 페이지 이동
+    window.location.href = '/PreDict'; // 페이지 이동
   };
 
   return (
     <div>
-      <input type="text" value={inputValue} onChange={handleInputChange} placeholder="입력하세요" />
-      <label htmlFor="ddd">123</label>
+      <div>닉네임 : </div>
+      <input type="text" value={inputValue} onChange={handleInputChange} placeholder="닉네임을 입력하세요" />
+      <label htmlFor="ddd">지역을 선택하세요. : </label>
       <select id= "ddd" value={selectedOption} onChange={handleSelectChange}>
         <option value="">선택하세요</option>
-        <option value="option1">옵션 1</option>
-        <option value="option2">옵션 2</option>
+        <option value="option1">대전</option>
+        <option value="option2">대구</option>
+        <option value="option2">부산</option>
+        <option value="option2">광주</option>
+        <option value="option2">제주도</option>
       </select>
-      <label htmlFor="aaa">asd</label>
+      <label htmlFor="aaa">.</label>
       <input  id= "aaa" type="file" onChange={handleImageChange} />
-      <button onClick={handleSubmit}>예측하기</button>
+      <button onClick={handleSubmit}>시작</button>
     </div>
   );
 };
