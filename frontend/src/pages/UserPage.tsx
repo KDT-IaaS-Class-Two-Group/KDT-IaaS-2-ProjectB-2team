@@ -37,17 +37,17 @@ const UserPage: React.FC = () => {
     <div>
       <div>닉네임 : </div>
       <input type="text" value={inputValue} onChange={handleInputChange} placeholder="닉네임을 입력하세요" />
-      <label htmlFor="ddd">지역을 선택하세요. : </label>
-      <select id= "ddd" value={selectedOption} onChange={handleSelectChange}>
+      <label htmlFor="region">지역을 선택하세요. : </label>
+      <select id= "region" value={selectedOption} onChange={handleSelectChange}>
         <option value="">선택하세요</option>
         <option value="option1">대전</option>
         <option value="option2">대구</option>
-        <option value="option2">부산</option>
-        <option value="option2">광주</option>
-        <option value="option2">제주도</option>
+        <option value="option3">부산</option>
+        <option value="option4">광주</option>
+        <option value="option5">제주도</option>
       </select>
-      <label htmlFor="aaa">.</label>
-      <input  id= "aaa" type="file" onChange={handleImageChange} />
+      <label htmlFor="userimg">.</label>
+      <input  id= "userimg" type="file" onChange={handleImageChange} />
       <button onClick={handleSubmit}>시작</button>
     </div>
   );
