@@ -59,7 +59,10 @@ const Predict: React.FC  = () => {
     if (!data) {
       return <p>데이터를 찾을 수 없습니다.</p>;
     }
-
+    
+    const handleSubmit = () => {
+      window.location.href = '/';
+    };
   return (
     <div id="root">
       <div>사망보고서</div>
@@ -78,19 +81,19 @@ const Predict: React.FC  = () => {
                 <div>공격력 : {data.attack}</div>
                 <div>방어력 : {data.defense}</div>
                 <div>정확도 : {data.accuracy}</div>
-                <div>민첩성 : ?</div>
+                <div>민첩성 : 없는디 머여?</div>
                 <div>무게 : {data.weight}</div>
               </div>
             </div>
           </div>
-          <div>10일</div>
+          <div>10일 임시 </div>
         </div>
       </div>
       <div>사망이력</div>
       <div>메인 글 
-        <div></div> {/*메인 글은 동적으로 생되게 만들기 */}
+        <div></div> 
       </div>
-      <div>버튼</div>
+      <div><button onClick={handleSubmit}>다시 시작</button></div>
       <div>다음 페이지?</div>
     </div> 
   )
