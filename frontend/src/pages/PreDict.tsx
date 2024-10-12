@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 interface Response {
+  img : string
   species: number;
   attack: string;
   defense: string;
@@ -13,6 +14,8 @@ const Predict: React.FC  = () => {
     const [data, setData] = useState<Response | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [nickname, setNickname] = useState<string>('');
+    const [region, setRegion] = useState<string>('');
   
     useEffect(() => {
       const fetchData = async () => {
@@ -37,7 +40,11 @@ const Predict: React.FC  = () => {
           setLoading(false);
         }
       };
-  
+
+      const urlParams = new URLSearchParams(window.location.search);
+      setNickname(urlParams.get('nickname') || '');
+      setRegion(urlParams.get('region') || '');
+    
       fetchData();
     }, []);
   
@@ -57,12 +64,12 @@ const Predict: React.FC  = () => {
     <div id="root">
       <div>사망보고서</div>
       <div>능력치
-        <div>이미지 : {}</div>
+      <div>이미지 : {data.img}</div>
         <div>
           <div>
             <div> 
-              <div>닉네임</div>
-              <div>지역</div>
+              <div>닉네임: {nickname}</div> {/* 닉네임 표시 */}
+              <div>지역: {region}</div> {/* 지역 표시 */}
             </div>
             <div>
               <div>능력치</div>
