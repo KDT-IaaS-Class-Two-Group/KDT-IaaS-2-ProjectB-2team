@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 import '../app/globals.css';
 
 const UserPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleInputChange = (basicdata: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,14 +19,22 @@ const UserPage: React.FC = () => {
 
   const handleImageChange = (basicdata: React.ChangeEvent<HTMLInputElement>) => {
     if (basicdata.target.files) {
-      setImage(basicdata.target.files[0]);
+      const selectedImage = basicdata.target.files[0];
+      setImage(selectedImage);
+      
+      // FileReader를 사용하여 이미지 미리보기 생성
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string); 
+      };
+      reader.readAsDataURL(selectedImage); 
     }
   };
 
   const handleSubmit = async () => {
     if (!inputValue || !selectedOption || selectedOption === '선택' || !image) {
       setErrorMessage('모두 입력하세요.');
-      return; // 조건을 만족하지 않으면 넘어가지 않음
+      return; 
     }
 
     const formData = new FormData();
@@ -49,9 +59,16 @@ const UserPage: React.FC = () => {
   };
 
   return (
-    <div id="root"  className="flex flex-col items-center space-y-4 p-4 bg-gray-200">
-      <div className="w-full p-2 mb-4 bg-gray-600 text-white rounded">이름 : 
-      <input type="name" value={inputValue} onChange={handleInputChange} placeholder="이름을 입력하세요" className=' bg-gray-600 text-white placeholder-white'/>
+    <div id="root" className="flex flex-col items-center space-y-4 p-4 bg-gray-200">
+      <div className="w-full p-2 mb-4 bg-gray-600 text-white rounded">
+        이름 : 
+        <input 
+          type="name" 
+          value={inputValue} 
+          onChange={handleInputChange} 
+          placeholder="이름을 입력하세요" 
+          className='bg-gray-600 text-white placeholder-white'
+        />
       </div>
       <div className="w-full p-2 mb-4 bg-gray-600 rounded">
         <label htmlFor="region" className='text-white'>지역 : </label>
@@ -64,10 +81,21 @@ const UserPage: React.FC = () => {
           <option value="제주도">제주도</option>
         </select>
       </div>
-      <label htmlFor="img" className="w-full h-64 bg-gray-600 text-white flex items-center justify-center mb-4">이미지를 업로드하세요.</label>
-      <input id="img" type="file" onChange={handleImageChange} className="hidden"/>
+      <label htmlFor="img" className={`w-full h-64 bg-gray-600 text-white flex items-center justify-center rounded mb-4 ${imagePreview ? 'hidden' : ''}`}>
+        이미지를 업로드하세요.
+        <input id="img" type="file" onChange={handleImageChange} className="hidden" />
+      </label>
+      {imagePreview && (
+        <Image 
+          src={imagePreview} 
+          alt="Preview" 
+          className="w-full h-64 object-cover mb-4 border rounded" 
+          width={256} // 원하는 너비로 설정
+          height={256} // 원하는 높이로 설정
+        />
+      )}
       {errorMessage && <p className="text-red-500">{errorMessage}</p>} 
-      <button onClick={handleSubmit} className='flex justify-end bg-gray-600 text-white'>시작</button>
+      <button onClick={handleSubmit} className='flex justify-end bg-gray-600 text-white rounded'>시작</button>
     </div>
   );
 };
