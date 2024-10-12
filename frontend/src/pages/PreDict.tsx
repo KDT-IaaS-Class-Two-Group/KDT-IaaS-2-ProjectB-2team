@@ -80,7 +80,7 @@ const Predict: React.FC  = () => {
                 </div>
                 <div className="flex w-1/2 border-white border-2">
                   <div className="flex w-1/2  p-1 justify-center mt-1">지역 </div>
-                  <div className="flex w-1/2 bg-gray-400 p-1 m-1 justify-center">{nickname}</div>
+                  <div className="flex w-1/2 bg-gray-400 p-1 m-1 justify-center">{region}</div>
                 </div>
               </div>
               <div className="flex border-white border-2">
