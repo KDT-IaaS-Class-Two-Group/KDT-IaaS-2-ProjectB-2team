@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css'; // Tailwind CSS import
+import './styles/index.css'; // Tailwind CSS import
 import Home from './Home'; // Home.tsx
 
 const HomePage: React.FC = () => {
