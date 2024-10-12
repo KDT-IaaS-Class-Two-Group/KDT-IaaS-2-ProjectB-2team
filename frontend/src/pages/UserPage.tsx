@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../app/globals.css';
 
 const UserPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
@@ -42,21 +43,24 @@ const UserPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div>닉네임 : </div>
-      <input type="name" value={inputValue} onChange={handleInputChange} placeholder="닉네임을 입력하세요" />
-      <label htmlFor="region">지역을 선택하세요. : </label>
-      <select id="region" value={selectedOption} onChange={handleSelectChange}>
-        <option value="선택">선택하세요</option>
-        <option value="대전">대전</option>
-        <option value="대구">대구</option>
-        <option value="부산">부산</option>
-        <option value="광주">광주</option>
-        <option value="제주도">제주도</option>
-      </select>
-      <label htmlFor="img">이미지를 업로드하세요 : </label>
-      <input id="img" type="file" onChange={handleImageChange} />
-      <button onClick={handleSubmit}>시작</button>
+    <div id="root"  className="flex flex-col items-center space-y-4 p-4 bg-gray-200">
+      <div className="w-full p-2 mb-4 bg-gray-600 text-white rounded">이름 : 
+      <input type="name" value={inputValue} onChange={handleInputChange} placeholder="이름을 입력하세요" className=' bg-gray-600 text-white placeholder-white'/>
+      </div>
+      <div className="w-full p-2 mb-4 bg-gray-600 rounded">
+        <label htmlFor="region" className='text-white'>지역 : </label>
+        <select id="region" value={selectedOption} onChange={handleSelectChange} className='bg-gray-600 text-white'>
+          <option value="선택" className='text-white'>선택하세요</option>
+          <option value="대전">대전</option>
+          <option value="대구">대구</option>
+          <option value="부산">부산</option>
+          <option value="광주">광주</option>
+          <option value="제주도">제주도</option>
+        </select>
+      </div>
+      <label htmlFor="img" className="w-full h-64 bg-gray-600 text-white flex items-center justify-center mb-4">이미지를 업로드하세요.</label>
+      <input id="img" type="file" onChange={handleImageChange} className="hidden"/>
+      <button onClick={handleSubmit} className='flex justify-end bg-gray-600 text-white'>시작</button>
     </div>
   );
 };
