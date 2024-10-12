@@ -1,11 +1,63 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
+
+interface Response {
+  species: number;
+  attack: string;
+  defense: string;
+  accuracy: string;
+  weight: string;
+}
+
 
 const Predict: React.FC  = () => {
+    const [data, setData] = useState<Response | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://127.0.0.1:8000/result', {
+            method: 'POST',
+          });
+  
+          if (!response.ok) {
+            throw new Error('서버 응답 오류');
+          }
+  
+          const result = await response.json();
+          setData(result.message);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError('알 수 없는 오류가 발생했습니다.');
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchData();
+    }, []);
+  
+    if (loading) {
+      return <p>로딩 중...</p>;
+    }
+  
+    if (error) {
+      return <p>에러: {error}</p>;
+    }
+  
+    if (!data) {
+      return <p>데이터를 찾을 수 없습니다.</p>;
+    }
+
   return (
     <div id="root">
       <div>사망보고서</div>
       <div>능력치
-        <div>이미지</div>
+        <div>이미지 : {}</div>
         <div>
           <div>
             <div> 
@@ -16,11 +68,11 @@ const Predict: React.FC  = () => {
               <div>능력치</div>
               <div>
                 <div>hp</div>
-                <div>공격력</div>
-                <div>방어력</div>
-                <div>정확도</div>
-                <div>민첩성</div>
-                <div>무게</div>
+                <div>공격력 : {data.attack}</div>
+                <div>방어력 : {data.defense}</div>
+                <div>정확도 : {data.accuracy}</div>
+                <div>민첩성 : ?</div>
+                <div>무게 : {data.weight}</div>
               </div>
             </div>
           </div>
