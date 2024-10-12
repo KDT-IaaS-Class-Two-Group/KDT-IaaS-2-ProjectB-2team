@@ -32,8 +32,6 @@ const UserPage: React.FC = () => {
       });
 
       if (response.ok) {
-        const result = await response.json();
-        // 닉네임과 지역을 URL 매개변수로 전달
         window.location.href = `/PreDict?nickname=${inputValue}&region=${selectedOption}`;
       } else {
         console.error('서버 오류:', response.statusText);
