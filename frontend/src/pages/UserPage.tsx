@@ -25,12 +25,22 @@ const UserPage: React.FC = () => {
     formData.append('select', selectedOption);
     if (image) formData.append('image', image);
 
-    await fetch('/result', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const response = await fetch('http://127.0.0.1:8000/result', {
+        method: 'POST',
+        body: formData,
+      });
 
-    window.location.href = '/PreDict'; // 페이지 이동
+      if (response.ok) {
+        // const result = await response.json();
+        // 닉네임과 지역을 URL 매개변수로 전달
+        window.location.href = `/PreDict?nickname=${inputValue}&region=${selectedOption}`;
+      } else {
+        console.error('서버 오류:', response.statusText);
+      }
+    } catch (error) {
+      console.error('요청 오류:', error);
+    }
   };
 
   return (
