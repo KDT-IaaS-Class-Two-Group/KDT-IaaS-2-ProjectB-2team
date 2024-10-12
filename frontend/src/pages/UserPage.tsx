@@ -5,6 +5,7 @@ const UserPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
   const [image, setImage] = useState<File | null>(null);
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleInputChange = (basicdata: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(basicdata.target.value);
@@ -21,6 +22,11 @@ const UserPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    if (!inputValue || !selectedOption || selectedOption === '선택' || !image) {
+      setErrorMessage('모두 입력하세요.');
+      return; // 조건을 만족하지 않으면 넘어가지 않음
+    }
+
     const formData = new FormData();
     formData.append('input', inputValue);
     formData.append('select', selectedOption);
@@ -60,6 +66,7 @@ const UserPage: React.FC = () => {
       </div>
       <label htmlFor="img" className="w-full h-64 bg-gray-600 text-white flex items-center justify-center mb-4">이미지를 업로드하세요.</label>
       <input id="img" type="file" onChange={handleImageChange} className="hidden"/>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>} 
       <button onClick={handleSubmit} className='flex justify-end bg-gray-600 text-white'>시작</button>
     </div>
   );
