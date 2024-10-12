@@ -5,17 +5,17 @@ const UserPage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState('');
   const [image, setImage] = useState<File | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  const handleInputChange = (basicdata: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(basicdata.target.value);
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(e.target.value);
+  const handleSelectChange = (basicdata: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(basicdata.target.value);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImage(e.target.files[0]);
+  const handleImageChange = (basicdata: React.ChangeEvent<HTMLInputElement>) => {
+    if (basicdata.target.files) {
+      setImage(basicdata.target.files[0]);
     }
   };
 
@@ -46,18 +46,18 @@ const UserPage: React.FC = () => {
   return (
     <div>
       <div>닉네임 : </div>
-      <input type="text" value={inputValue} onChange={handleInputChange} placeholder="닉네임을 입력하세요" />
-      <label htmlFor="ddd">지역을 선택하세요. : </label>
-      <select id="ddd" value={selectedOption} onChange={handleSelectChange}>
-        <option value="">선택하세요</option>
+      <input type="name" value={inputValue} onChange={handleInputChange} placeholder="닉네임을 입력하세요" />
+      <label htmlFor="region">지역을 선택하세요. : </label>
+      <select id="region" value={selectedOption} onChange={handleSelectChange}>
+        <option value="선택">선택하세요</option>
         <option value="대전">대전</option>
         <option value="대구">대구</option>
         <option value="부산">부산</option>
         <option value="광주">광주</option>
         <option value="제주도">제주도</option>
       </select>
-      <label htmlFor="aaa">이미지를 업로드하세요 : </label>
-      <input id="aaa" type="file" onChange={handleImageChange} />
+      <label htmlFor="img">이미지를 업로드하세요 : </label>
+      <input id="img" type="file" onChange={handleImageChange} />
       <button onClick={handleSubmit}>시작</button>
     </div>
   );
