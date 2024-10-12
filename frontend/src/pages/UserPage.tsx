@@ -40,11 +40,23 @@ const UserPage: React.FC = () => {
       <label htmlFor="region">지역을 선택하세요. : </label>
       <select id= "region" value={selectedOption} onChange={handleSelectChange}>
         <option value="">선택하세요</option>
-        <option value="option1">대전</option>
-        <option value="option2">대구</option>
-        <option value="option3">부산</option>
-        <option value="option4">광주</option>
-        <option value="option5">제주도</option>
+        <option value="option1">서울</option>
+        <option value="option2">부산</option>
+        <option value="option3">대구</option>
+        <option value="option4">인천</option>
+        <option value="option5">광주</option>
+        <option value="option6">대전</option>
+        <option value="option7">울산</option>
+        <option value="option8">세종</option>
+        <option value="option9">경기</option>
+        <option value="option10">강원</option>
+        <option value="option11">충북</option>
+        <option value="option12">충남</option>
+        <option value="option13">전북</option>
+        <option value="option14">전남</option>
+        <option value="option15">경북</option>
+        <option value="option16">경남</option>
+        <option value="option17">제주</option>
       </select>
       <label htmlFor="userimg">.</label>
       <input  id= "userimg" type="file" onChange={handleImageChange} />
