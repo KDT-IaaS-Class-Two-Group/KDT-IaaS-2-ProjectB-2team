@@ -37,8 +37,11 @@ print(type(data))
 # @app.get("/{get_end_point}")
 # def dynamic_get(get_end_point: str):
 #     return {"message": f"Hello from {get_end_point}"}
-@app.post("/{post_end_point}")
-def dynamic_get(post_end_point: str):
-    return {"message":data}
+# @app.post("/{post_end_point}")
+# def dynamic_get(post_end_point: str):
+#     return {"message":data}
+
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
