@@ -32,39 +32,8 @@ file_path = os.path.join(current_dir, 'data', 'data.json')
 # 파일 열기
 with open(file_path, 'r', encoding='utf-8') as file:
     data = json.load(file)  # JSON 파일을 파싱해서 Python 객체로 변환
-# @app.get("/")
-# def read_root():
-#     return {"Hello": "World"}
 
-# @app.get("/{get_end_point}")
-# def dynamic_get(get_end_point: str):
-#     return {"message": f"Hello from {get_end_point}"}
-# @app.post("/{post_end_point}")
-# def dynamic_get(post_end_point: str):
-#     return {"message":data}
-
-# /result 엔드포인트 생성
-# @app.post("/result")
-# async def receive_result(
-#     nickname: str = Form(...),
-#     region: str = Form(...),
-#     img: bytes = File(...)  # 바이너리 데이터를 바로 받음
-# ):
-#     dto = ResultDTO(nickname=nickname, region=region)  # DTO로 텍스트 데이터 처리
-    
-#     # img는 bytes로 받아지며, 그대로 파일로 저장하거나 사용할 수 있음.
-#     img_size = len(img)
-    
-#     return {
-#         "nickname": dto.nickname,
-#         "region": dto.region,
-#         "filesize": img_size
-#     }
 @app.post("/result")
-# async def result(nickname: str = Form(...), region: str = Form(...), img: UploadFile = File(...)):
-#     print({"nickname": nickname, "region": region, "filename": img.filename})
-#     # 파일을 처리하는 코드 (파일명 반환 예시)
-#     return {"nickname": nickname, "region": region, "filename": img.filename}
 async def upload_data(
     nickname: str = Form(...),
     region: str = Form(...),
