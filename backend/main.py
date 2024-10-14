@@ -14,10 +14,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# DTO (데이터 전송 객체)
-class ResultDTO(BaseModel):
-    nickname: str
-    region: str
 # 임시 객체 구조체
 class TempData:
     def __init__(self, nickname: str, region: str, img_data: bytes):
