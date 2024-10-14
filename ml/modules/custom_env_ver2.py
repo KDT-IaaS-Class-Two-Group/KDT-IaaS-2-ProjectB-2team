@@ -107,18 +107,18 @@ class CustomSurvivalEnv(gym.Env):
         return total_loss
 
     def handle_exploration_success(self):
-        food_gain = 5 + int(self.populationRate * 0.4)  # 인구 밀도에 따른 보상 증가
+        food_gain = 1 + int(self.populationRate * 0.4)  # 인구 밀도에 따른 보상 증가
         self.food += food_gain
         self.food_acquired += food_gain
-        print(Fore.GREEN + f"탐색 성공! 음식 {food_gain} 획득.")
+        print(Fore.GREEN + f"탐색 성공! 음식 {food_gain} 획득. 현재 채력 : {self.state['hp']}")
 
     def handle_exploration_failure(self):
         self.state["hp"] -= max(5, 15 - self.state["defense"])
-        print(Fore.RED + "탐색 실패로 HP가 감소했습니다.")
+        print(Fore.RED + f"탐색 실패로 HP가 감소했습니다. 현재 채력 : {self.state['hp']}")
 
     def handle_rest(self):
         self.state["hp"] += 1
-        print(Fore.CYAN + "휴식으로 HP가 1 회복되었습니다.")
+        print(Fore.CYAN + f"휴식으로 HP가 1 회복되었습니다. 현재 채력 : {self.state['hp']}")
 
     def calculate_reward(self):
         """생존 일자에 따른 보상 반환."""
@@ -126,7 +126,7 @@ class CustomSurvivalEnv(gym.Env):
 
     def calculate_risk_factor(self):
         """인구 밀도에 따른 위험 요소 계산."""
-        return 1 / (1 + math.exp(-0.6 * (self.populationRate - 50)))
+        return 1 / (1 + math.exp(-0.3 * (self.populationRate - 50)))
 
     def check_done(self):
         """종료 조건 확인: HP가 0이 되면 종료."""
@@ -153,7 +153,7 @@ if __name__ == "__main__":
         "weight": 120
     }
 
-    env = CustomSurvivalEnv(populationRate=60, agent_params=agent_params)
+    env = CustomSurvivalEnv(populationRate=11, agent_params=agent_params) #! 인구 밀집도 계산 시 주의할 것
 
     episodes = 5
     for _ in range(episodes):
@@ -163,6 +163,6 @@ if __name__ == "__main__":
         while not done:
             action = env.action_space.sample()  # 무작위 행동 선택
             obs, reward, done, _, _ = env.step(action)
-            env.render()
+            # env.render()
 
         env.close()
