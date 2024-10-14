@@ -3,9 +3,10 @@ import uvicorn
 import json
 import os
 from fastapi.middleware.cors import CORSMiddleware
-
+from pydantic import BaseModel
 app = FastAPI()
 
+#CORS 설정    
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  
@@ -13,6 +14,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# DTO (데이터 전송 객체)
+class ResultDTO(BaseModel):
+    nickname: str
+    region: str
 # 현재 파일이 실행되는 디렉토리 경로 가져오기
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,14 +29,14 @@ file_path = os.path.join(current_dir, 'data', 'data.json')
 with open(file_path, 'r', encoding='utf-8') as file:
     data = json.load(file)  # JSON 파일을 파싱해서 Python 객체로 변환
 
+print(type(data))
+# @app.get("/")
+# def read_root():
+#     return {"Hello": "World"}
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-@app.get("/{get_end_point}")
-def dynamic_get(get_end_point: str):
-    return {"message": f"Hello from {get_end_point}"}
+# @app.get("/{get_end_point}")
+# def dynamic_get(get_end_point: str):
+#     return {"message": f"Hello from {get_end_point}"}
 @app.post("/{post_end_point}")
 def dynamic_get(post_end_point: str):
     return {"message":data}
