@@ -4,7 +4,7 @@ import json
 import os
 import tensorflow as tf
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Dict
+from typing import Dict,List
 
 app = FastAPI()
 class_list = ["species", "attack", "defense", "accuracy", "weight"]
@@ -50,6 +50,17 @@ class TempData:
         self.nickname = nickname
         self.region = region
         self.img_data = img_data
+        
+# M2 함수 정의
+async def M2(nickname: str, predictions: Dict[str, float], temp_array_1: List, temp_array_2: List) -> Dict:
+    result = {
+        "nickname": nickname,
+        "stat": predictions,  # M1 모델의 예측 결과
+        "log": [temp_array_1, temp_array_2]  # 두 개의 임시 배열
+    }
+    # 결과를 잘 보이게 출력
+    print("M2 함수 호출 결과:", result)
+    return result
 
 # 임시 저장 객체 (예시로 dict 사용)
 temp_storage = {}
@@ -97,7 +108,14 @@ async def predict():
         # model_predict 함수를 호출하여 예측 결과를 가져옴
         response = await model_predict(img_data, model)  # img_data를 직접 전달
         print(response)
-        return response
+        # M2 함수 호출
+        temp_array_1 = []  # 첫 번째 임시 배열
+        temp_array_2 = []  # 두 번째 임시 배열
+        result = await M2(temp_obj.nickname, response, temp_array_1, temp_array_2)
+
+        return result
+        # return response
+    
 
     except HTTPException as e:
         raise e
