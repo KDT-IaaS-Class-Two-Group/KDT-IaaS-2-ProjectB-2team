@@ -76,51 +76,53 @@ with open(file_path, 'r', encoding='utf-8') as file:
     data = json.load(file)  # JSON 파일을 파싱해서 Python 객체로 변환
 
 @app.post("/result")
-async def upload_data(
+async def upload_and_predict(
     nickname: str = Form(...),
     region: str = Form(...),
     img: UploadFile = File(...)
 ):
-    # 이미지 파일을 바이너리 데이터로 읽기
-    img_data = await img.read()
-    
-    # 임시 객체에 데이터 저장
-    temp_obj = TempData(nickname=nickname, region=region, img_data=img_data)
-    temp_storage[nickname] = temp_obj  # nickname을 키로 사용하여 저장
-
-    # 저장된 데이터를 print로 출력
-    print(f"Nickname: {temp_obj.nickname}")
-    print(f"Region: {temp_obj.region}")
-    print(f"Image Data (binary): {temp_obj.img_data[:10]}... (truncated)")  # 이미지 데이터는 일부만 출력
-    return {"message": "Data received", "nickname": nickname, "region": region}
-
-@app.post("/predict")
-async def predict():
     try:
-        # 임시 저장소에서 첫 번째 객체 가져오기
-        if not temp_storage:
-            raise HTTPException(status_code=400, detail="No image data available")
+        # 이미지 파일을 바이너리 데이터로 읽기
+        img_data = await img.read()
 
-        # temp_storage의 첫 번째 TempData 객체를 가져와
-        temp_obj = next(iter(temp_storage.values()))  # 첫 번째 저장된 객체를 가져옴
-        img_data = temp_obj.img_data  # 저장된 이미지 데이터 가져오기
+        # 임시 객체에 데이터 저장
+        temp_obj = TempData(nickname=nickname, region=region, img_data=img_data)
+        temp_storage[nickname] = temp_obj  # nickname을 키로 사용하여 저장
 
-        # model_predict 함수를 호출하여 예측 결과를 가져옴
-        response = await model_predict(img_data, model)  # img_data를 직접 전달
-        print(response)
-        # M2 함수 호출
-        temp_array_1 = []  # 첫 번째 임시 배열
-        temp_array_2 = []  # 두 번째 임시 배열
+        # 저장된 데이터를 print로 출력
+        print(f"Nickname: {temp_obj.nickname}")
+        print(f"Region: {temp_obj.region}")
+        print(f"Image Data (binary): {temp_obj.img_data[:10]}... (truncated)")  # 이미지 데이터는 일부만 출력
+
+        # 모델 예측 수행
+        response = await model_predict(temp_obj.img_data, model)
+
+        # M2 함수 호출 (임시 배열을 설정)
+        temp_array_1 = [{} for _ in range(9)]  # 임시 배열 9개 생성
+        temp_array_2 = [{} for _ in range(9)]
         result = await M2(temp_obj.nickname, response, temp_array_1, temp_array_2)
 
-        return result
-        # return response
-    
+        # 최종 반환할 결과값
+        final_result = {
+            "result": {
+                "nickname": temp_obj.nickname,
+                "img": "temp_obj.img_data",  # 이미지 바이너리 데이터 => 디코딩 필요
+                "region": temp_obj.region,
+                "stat": result["stat"],  # 모델 예측 결과
+                "log": result["log"]  # 임시 배열 로그
+            }
+        }
+
+        # 결과를 콘솔에 출력
+        print(final_result)
+
+        # 결과를 클라이언트에게 반환
+        return final_result
 
     except HTTPException as e:
         raise e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Prediction and result processing failed: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
