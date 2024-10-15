@@ -2,11 +2,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.distributions import Categorical
-import gymnasium as gym
 import numpy as np
 import os
 
-from modules.custom_env_ver2 import CustomSurvivalEnv  # 사용자 정의 환경
+from modules.custom_env_ver2_copy import CustomSurvivalEnv  # 사용자 정의 환경
 
 torch.autograd.set_detect_anomaly(True)  # 이상 탐지 활성화
 
@@ -34,10 +33,10 @@ class PPOAgent:
 
     def select_action(self, state):
         state = torch.FloatTensor(state).unsqueeze(0)
-        action_probs, _ = self.policy(state)
+        action_probs, state_value = self.policy(state)
         dist = Categorical(action_probs)
         action = dist.sample()
-        return action.item(), dist.log_prob(action).detach()
+        return action.item(), dist.log_prob(action).detach(), state_value.item()
 
     def compute_returns(self, rewards, dones, next_value):
         returns = []
@@ -75,51 +74,83 @@ class PPOAgent:
             self.optimizer.step()
 
     def save_model(self, file_path):
-        """모델 저장"""
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         torch.save(self.policy.state_dict(), file_path)
         print(f"모델이 저장되었습니다: {file_path}")
 
     def load_model(self, file_path):
-        """모델 로드"""
-        self.policy.load_state_dict(torch.load(file_path))
+        """저장된 모델을 키 매핑 후 로드"""
+        saved_state_dict = torch.load(file_path)
+
+        # 키 매핑 처리
+        new_state_dict = {}
+        for key, value in saved_state_dict.items():
+            if key.startswith("actor."):
+                new_key = key.replace("actor.", "")
+            elif key.startswith("critic."):
+                new_key = key.replace("critic.", "")
+            else:
+                new_key = key
+            new_state_dict[new_key] = value
+
+        self.policy.load_state_dict(new_state_dict)
         print(f"모델이 로드되었습니다: {file_path}")
 
-def train(env, agent, num_episodes=1000, max_steps=500, save_path="ppo_model.pth"):
-    for episode in range(num_episodes):
-        state, _ = env.reset()
-        log_probs, rewards, states, actions, dones = [], [], [], [], []
+def run_simulation(agent, env, max_steps=100):
+    """시뮬레이션 실행"""
+    state, _ = env.reset()
+    total_reward = 0
+    episode_log = []
 
-        total_reward, done = 0, False
+    for _ in range(max_steps):
+        action, log_prob, state_value = agent.select_action(state)
+        next_state, reward, done, _, _ = env.step(action)
 
-        for step in range(max_steps):
-            action, log_prob = agent.select_action(state)
-            next_state, reward, done, _, _ = env.step(action)
+        log_entry = {
+            "state": state.tolist(),
+            "action": action,
+            "state_value": state_value,
+            "reward": reward
+        }
+        episode_log.append(log_entry)
 
-            log_probs.append(log_prob)
-            rewards.append(reward)
-            states.append(state)
-            actions.append(action)
-            dones.append(done)
+        state = next_state
+        total_reward += reward
 
-            state = next_state
-            total_reward += reward
+        if done:
+            break
 
-            if done:
-                break
-
-        agent.update(states, actions, log_probs, rewards, dones, state)
-        print(f"에피소드 {episode + 1}: 총 보상 = {total_reward}")
-
-    # 학습 종료 후 모델 저장
-    agent.save_model(save_path)
+    return episode_log, total_reward
 
 if __name__ == "__main__":
-    env = CustomSurvivalEnv()
+    population_rate = 20.0  # 인구 밀집도 설정
+
+    agent_params = {
+        "species": 0,
+        "attack": 2.5,
+        "defense": 2.0,
+        "accuracy": 80,
+        "weight": 100
+    }
+
+    # 환경 및 에이전트 초기화
+    env = CustomSurvivalEnv(populationRate=population_rate, agent_params=agent_params)
     agent = PPOAgent(env.observation_space.shape[0], env.action_space.n)
 
-    # 학습 후 모델 저장
-    train(env, agent, save_path="models/ppo_model.pth")
+    # 모델 로드 및 시뮬레이션 실행
+    try:
+        agent.load_model("models/ppo_model.pth")
+    except Exception as e:
+        print(f"모델 로드 실패: {e}")
 
-    # 저장된 모델 로드 및 테스트
-    # agent.load_model("models/ppo_model.pth")
+    # 시뮬레이션 수행
+    episode_log, total_reward = run_simulation(agent, env)
+
+    # 로그와 보상 출력
+    print(f"총 보상: {total_reward}")
+    for entry in episode_log:
+        print(entry)
+
+    # 환경 내부 로그 출력
+    env.render()
+
