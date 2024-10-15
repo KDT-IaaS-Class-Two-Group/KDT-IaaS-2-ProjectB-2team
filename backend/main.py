@@ -5,7 +5,7 @@ import os
 import tensorflow as tf
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict,List
-
+import base64
 app = FastAPI()
 class_list = ["species", "attack", "defense", "accuracy", "weight"]
 
@@ -90,9 +90,9 @@ async def upload_and_predict(
         temp_storage[nickname] = temp_obj  # nickname을 키로 사용하여 저장
 
         # 저장된 데이터를 print로 출력
-        print(f"Nickname: {temp_obj.nickname}")
-        print(f"Region: {temp_obj.region}")
-        print(f"Image Data (binary): {temp_obj.img_data[:10]}... (truncated)")  # 이미지 데이터는 일부만 출력
+        # print(f"Nickname: {temp_obj.nickname}")
+        # print(f"Region: {temp_obj.region}")
+        # print(f"Image Data (binary): {temp_obj.img_data[:10]}... (truncated)")  # 이미지 데이터는 일부만 출력
 
         # 모델 예측 수행
         response = await model_predict(temp_obj.img_data, model)
@@ -101,12 +101,12 @@ async def upload_and_predict(
         temp_array_1 = [{} for _ in range(9)]  # 임시 배열 9개 생성
         temp_array_2 = [{} for _ in range(9)]
         result = await M2(temp_obj.nickname, response, temp_array_1, temp_array_2)
-
+        img_trans =  base64.b64encode(temp_obj.img_data).decode("utf-8")
         # 최종 반환할 결과값
         final_result = {
             "result": {
                 "nickname": temp_obj.nickname,
-                "img": "temp_obj.img_data",  # 이미지 바이너리 데이터 => 디코딩 필요
+                "img": img_trans,  # 이미지 바이너리 데이터 => 디코딩 필요
                 "region": temp_obj.region,
                 "stat": result["stat"],  # 모델 예측 결과
                 "log": result["log"]  # 임시 배열 로그
