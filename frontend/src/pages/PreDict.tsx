@@ -1,75 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import '../app/globals.css';
-
-interface Response {
-  img : string
-  species: number;
-  attack: string;
-  defense: string;
-  accuracy: string;
-  weight: string;
-}
+import Image from 'next/image';
+import { UserContext , UserProvider} from '@/components/context';
 
 
-const Predict: React.FC  = () => {
-    const [data, setData] = useState<Response | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [nickname, setNickname] = useState<string>('');
-    const [region, setRegion] = useState<string>('');
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch('http://127.0.0.1:8000/result', {
-            method: 'POST',
-          });
-  
-          if (!response.ok) {
-            throw new Error('서버 응답 오류');
-          }
-  
-          const result = await response.json();
-          setData(result.message);
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            setError(error.message);
-          } else {
-            setError('알 수 없는 오류가 발생했습니다.');
-          }
-        } finally {
-          setLoading(false);
-        }
-      };
+const Predict: React.FC = () => {
+  const context = useContext(UserContext); // UserContext에서 데이터 받아오기
+  if (!context) {
+    throw new Error('UserContext must be used within a UserProvider');
+  }
 
-      const urlParams = new URLSearchParams(window.location.search);
-      setNickname(urlParams.get('nickname') || '');
-      setRegion(urlParams.get('region') || '');
-    
-      fetchData();
-    }, []);
+  const { userData } = context;
+  console.log(userData)
   
-    if (loading) {
-      return <p>로딩 중...</p>;
-    }
+  // userData에서 필요한 데이터를 구조분해할당으로 추출
+  const { nickname, region, image, stats } = userData || {
+    nickname: '',
+    region: '',
+    image: '',
+    stats: { attack: 0, defense: 0, accuracy: 0, weight: 0 }
+  };
   
-    if (error) {
-      return <p>에러: {error}</p>;
-    }
-  
-    if (!data) {
-      return <p>데이터를 찾을 수 없습니다.</p>;
-    }
-    
-    const handleSubmit = () => {
-      window.location.href = '/';
-    };
+  const handleSubmit = () => {
+    window.location.href = '/';
+  };
+
     return (
+      
+      <UserProvider>
       <div id="root" className="bg-gray-200 p-4 flex flex-col">
         <div className="text-xl font-bold mb-4 flex justify-center">사망 보고서</div>
         <div className="flex mb-4 bg-gray-400 p-2 rounded">
           <div className="w-1/4 bg-gray-200 flex justify-center items-center mr-5">
-            이미지 : {data.img}
+          이미지 : <Image src={image} alt="Uploaded" className="w-full h-64 object-cover" layout="fill" // 레이아웃 안에 꽉 찬 이미지
+      objectFit="contain" /> {/* 이미지 출력 */}
           </div>
           <div className="w-3/4 bg-gray-200 flex p-2">
             <div className="w-3/4 p-2 flex flex-col">
@@ -87,11 +51,11 @@ const Predict: React.FC  = () => {
                 <div className="p-2 w-1/4 flex justify-center items-center text-2xl">능력치</div>
                 <div className="grid grid-cols-3 gap-1 w-3/4 p-2">
                   <div className="bg-gray-400 justify-center flex">체력 : 100</div>
-                  <div className="bg-gray-400 justify-center flex">공격력: {data.attack}</div>
-                  <div className="bg-gray-400 justify-center flex">방어력: {data.defense}</div>
-                  <div className="bg-gray-400 justify-center flex">정확도: {data.accuracy}</div>
-                  <div className="bg-gray-400 justify-center flex">민첩성: 없슈</div>
-                  <div className="bg-gray-400 justify-center flex">무게: {data.weight}</div>
+                  <div className="bg-gray-400 justify-center flex">공격력: {stats.attack}</div>
+                  <div className="bg-gray-400 justify-center flex">방어력: {stats.defense}</div>
+                  <div className="bg-gray-400 justify-center flex">정확도: {stats.accuracy}</div>
+                  <div className="bg-gray-400 justify-center flex">민첩성: 10</div>
+                  <div className="bg-gray-400 justify-center flex">무게: {stats.weight}</div>
                 </div>
               </div>
             </div>
@@ -116,6 +80,8 @@ const Predict: React.FC  = () => {
         <button onClick={handleSubmit} className="bg-blue-500 text-white py-1 px-4 rounded mt-2">다시 시작</button>
         </div>
       </div>
+
+      </UserProvider>
     );
 }
 export default Predict
