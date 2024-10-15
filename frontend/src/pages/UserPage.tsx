@@ -1,5 +1,6 @@
 import React, { useState ,useContext } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import '../app/globals.css';
 import { UserContext } from '@/components/context';
 
@@ -8,7 +9,9 @@ const UserPage: React.FC = () => {
   if (!context) {
     throw new Error("UserContext must be used within a UserProvider");
   }
-  const { setUserData } = context;
+  const { userData , setUserData } = context;
+
+  const userouter = useRouter();
   const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
   const [image, setImage] = useState<File | null>(null);
@@ -46,6 +49,8 @@ const UserPage: React.FC = () => {
     }
 
     const formData = new FormData();
+    formData.append("nickname",inputValue);
+    formData.append("region", selectedOption)
     if (image) formData.append('image', image);
 
     try {
@@ -55,15 +60,15 @@ const UserPage: React.FC = () => {
       });
       const result = await response.json()
       console.log(result)
+      console.log(result.message)
+      // console.log(URL.createObjectURL(image))
 
       if (response.ok) {
         setUserData({
-          nickname: inputValue, 
-          region: selectedOption,
-          image: URL.createObjectURL(image),
-          stats : result
+          result : result.message
         });
-        window.location.href = `/PreDict`;
+        console.log(userData);
+        userouter.push('/PreDict')
       } else {
         console.error('서버 오류:', response.statusText);
       }
@@ -75,8 +80,8 @@ const UserPage: React.FC = () => {
 
   return (
     <div id="root" className="flex flex-col items-center space-y-4 p-4 bg-gray-200">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-      <div className="w-full p-2 mb-4 bg-gray-600 text-white rounded">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-4/5">
+      <div className="w-full p-2 mb-4 bg-gray-400 text-white rounded">
         이름 : 
         <input 
           type="name" 
@@ -84,12 +89,12 @@ const UserPage: React.FC = () => {
           value={inputValue} 
           onChange={handleInputChange} 
           placeholder="이름을 입력하세요" 
-          className='bg-gray-600 text-white placeholder-white'
+          className='bg-gray-400 text-white placeholder-white'
         />
       </div>
-      <div className="w-full p-2 mb-4 bg-gray-600 rounded">
+      <div className="w-full p-2 mb-4 bg-gray-400 rounded">
         <label htmlFor="region" className='text-white'>지역 : </label>
-        <select id="region" value={selectedOption} onChange={handleSelectChange} className='bg-gray-600 text-white'>
+        <select id="region" value={selectedOption} onChange={handleSelectChange} className='bg-gray-400 text-white'>
           <option value="선택" className='text-white'>선택하세요</option>
           <option value="대전">대전</option>
           <option value="대구">대구</option>
@@ -99,7 +104,7 @@ const UserPage: React.FC = () => {
         </select>
       </div>
       
-      <label htmlFor="img" className={`w-full h-1000 bg-gray-600 text-white flex items-center justify-center rounded mb-4 ${imagePreview ? 'hidden' : ''}`}>
+      <label htmlFor="img" className={`w-full h-1000 bg-gray-400 text-white flex items-center justify-center rounded mb-4 ${imagePreview ? 'hidden' : ''}`}>
         이미지를 업로드하세요.
         <input id="img" type="file" onChange={handleImageChange} className="hidden" />
       </label>
@@ -116,7 +121,7 @@ const UserPage: React.FC = () => {
       )}
 
       {errorMessage && <p className="text-red-500">{errorMessage}</p>} 
-      <button type="submit" className='flex justify-end bg-gray-600 text-white rounded'>시작</button>
+      <button type="submit" className='flex bg-gray-400 text-white w-1/6 justify-center items-end'>시작</button>
       </form>
     </div>
   );
