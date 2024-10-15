@@ -7,7 +7,7 @@ const MainPage: React.FC = () => {
   };
 
   return (
-    <div id="root" className="flex flex-col items-center justify-center h-screen bg-gray-500">
+    <div id="root" className="flex flex-col items-center justify-center h-screen bg-gray-400">
       <div className="text-center">
         <h1 className="text-xl font-bold mb-4">
           Zom 이상하다고 생각은 했지만<br/>Bi 상사태가 발생했습니다.
