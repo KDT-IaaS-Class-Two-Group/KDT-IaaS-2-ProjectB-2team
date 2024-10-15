@@ -1,15 +1,19 @@
 import React, { createContext, useState } from 'react';
 
 interface UserData {
-  nickname: string;
-  region: string;
-  image: string;
-  stats: {
-    attack: number;
-    defense: number;
-    accuracy: number;
-    weight: number;
-  };
+  result:{
+    nickName: string;
+    region: string;
+    img: string;
+    stat: {
+      species : number
+      attack: number;
+      defense: number;
+      accuracy: string;
+      weight: number;
+    },
+    log : string[];
+  }
 }
 
 
