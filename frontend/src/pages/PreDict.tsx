@@ -65,7 +65,7 @@ const Predict: React.FC  = () => {
       window.location.href = '/';
     };
     return (
-      <div id="root" className="bg-gray-200 p-4 flex flex-col">
+      <div id="root" className="p-4 flex flex-col">
         <div className="text-xl font-bold mb-4 flex justify-center">사망 보고서</div>
         <div className="flex mb-4 bg-gray-400 p-2 rounded">
           <div className="w-1/4 bg-gray-200 flex justify-center items-center mr-5">
