@@ -55,7 +55,7 @@ const UserPage: React.FC = () => {
       });
 
       if (response.ok) {
-        window.location.href = `/PreDict?nickname=${inputValue}&region=${selectedOption}`;
+        // window.location.href = `/PreDict?nickname=${inputValue}&region=${selectedOption}`;
         response;
       } else {
         console.error("서버 오류:", response.statusText);
