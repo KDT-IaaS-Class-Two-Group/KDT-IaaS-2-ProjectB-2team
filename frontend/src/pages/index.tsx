@@ -7,24 +7,15 @@ const MainPage: React.FC = () => {
   };
 
   return (
-    <div id="root" className="flex flex-col items-center justify-center h-screen bg-gray-500">
-      <div className="text-center">
-        <h1 className="text-xl font-bold mb-4">
-          Zom 이상하다고 생각은 했지만<br/>Bi 상사태가 발생했습니다.
-        </h1>
-      </div>
-      <div className="mb-8">
-        <p className="text-center">
-          이미지분석시뮬레이션모델 머신러닝 투 좀비 이거 보여주려고 어그로 끌었다 좀비 실화냐?
-        </p> 
-      </div>
-      <div>
-        <button 
-          onClick={handleStartClick} 
-          className="px-4 py-2 bg-gray-300 text-black rounded"
-        >
-          게임 시작
-        </button>
+    <div id="root" className="flex flex-col items-center justify-center h-screen ">
+      <div className="relative mb-4">
+      <img src="/images/index.png" alt="description" className="w-1080 h-1075 object-cover" />
+      <button onClick={handleStartClick}
+      className="absolute top-[787px] left-[611px] 
+      px-4 py-2 bg-[#332F47CC] rounded border border-[#D9C4B2] 
+      font-cfont text-[#C5C1C3] text-lg hover:bg-[#D9C4B2CC] hover:text-black">
+        게임 시작
+      </button>
       </div>
     </div>
   );
