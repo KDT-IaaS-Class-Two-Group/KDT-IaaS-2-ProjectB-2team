@@ -15,8 +15,7 @@
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background-color: #332F47;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -26,6 +25,18 @@ body {
   }
 }
 
-.h-1000 {
-  height: 1000px;
+.w-1080 {
+  width: 1080px;
 }
+.h-1075 {
+  height: 1075px;
+}
+
+@font-face {
+  font-family: 'cfont';
+  src: url('/fonts/국립박물관문화재단클래식M.ttf') format('truetype'),
+       url('/fonts/국립박물관문화재단클래식M.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+

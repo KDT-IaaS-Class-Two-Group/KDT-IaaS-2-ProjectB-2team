@@ -85,55 +85,59 @@ const UserPage: React.FC = () => {
   };
 
   return (
-    <div id="root" className="flex flex-col items-center space-y-4 p-4 bg-gray-200">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-4/5">
-      <div className="w-full p-2 mb-4 bg-gray-400 text-white rounded">
-        이름 : 
-        <input 
-          type="name" 
-          name="name"
-          value={inputValue} 
-          onChange={handleInputChange} 
-          placeholder="이름을 입력하세요" 
-          className='bg-gray-400 text-white placeholder-white'
-        />
-      </div>
-      <div className="w-full p-2 mb-4 bg-gray-400 rounded">
-        <label htmlFor="region" className='text-white'>지역 : </label>
-        <select id="region" value={selectedOption} onChange={handleSelectChange} className='bg-gray-400 text-white'>
-          <option value="선택" className='text-white'>선택하세요</option>
-          <option value="대전">대전</option>
-          <option value="대구">대구</option>
-          <option value="부산">부산</option>
-          <option value="광주">광주</option>
-          <option value="제주도">제주도</option>
-        </select>
-      </div>
-      
-      <label htmlFor="img" className={`w-full h-1000 bg-gray-400 text-white flex items-center justify-center rounded mb-4 ${imagePreview ? 'hidden' : ''}`}>
-        이미지를 업로드하세요.
-        <input
-          id="img"
-          type="file"
-          onChange={handleImageChange}
-          className="hidden"
-        />
-      </label>
-      {imagePreview && (
-        <div className="mt-4 relative w-full h-screen max-w-[700px]">
-          <Image 
-          src={imagePreview} 
-          alt="Preview" 
-          className="w-full h-64 object-cover mb-4 border rounded" 
-          layout="fill" // 레이아웃 안에 꽉 찬 이미지
-          objectFit="contain" // objectFit 속성 수정: objectFit을 contain으로 설정
-        />
-        </div>
-      )}
+    <div id="root" className="flex flex-col items-center justify-center h-screen">
+      <div className="relative mb-4">
+        <img src="/images/userpage.png" alt="description" className="w-1080 h-1075 object-cover" />
 
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>} 
-      <button type="submit" className='flex bg-gray-400 text-white w-1/6 justify-center items-end'>시작</button>
-      </form>
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center p-4">
+          <div className="w-[500px] p-2 mb-4 bg-[#332F47CC] rounded border border-[#D9C4B2] font-cfont text-[#C5C1C3] text-lg flex items-center">
+            닉네임 : 
+            <input 
+              type="name" 
+              value={inputValue} 
+              onChange={handleInputChange} 
+              placeholder="닉네임을 입력하세요" 
+              className='bg-[#332F47CC] text-[#C5C1C3] text-lg placeholder-white'
+            />
+          </div>
+          
+          <div className="w-[500px] p-2 mb-4 bg-[#332F47CC] rounded border border-[#D9C4B2] font-cfont">
+            <label htmlFor="region" className='text-[#C5C1C3] font-cfont'>지역 : </label>
+            <select id="region" value={selectedOption} onChange={handleSelectChange} className='bg-[#332F47CC] text-[#C5C1C3]'>
+              <option value="선택" className='font-cfont text-[#C5C1C3] text-lg'>선택하세요</option>
+              <option value="대전" className='font-cfont text-[#C5C1C3] text-lg'>대전</option>
+              <option value="대구" className='font-cfont text-[#C5C1C3] text-lg'>대구</option>
+              <option value="부산" className='font-cfont text-[#C5C1C3] text-lg'>부산</option>
+              <option value="광주" className='font-cfont text-[#C5C1C3] text-lg'>광주</option>
+              <option value="제주도" className='font-cfont text-[#C5C1C3] text-lg'>제주도</option>
+            </select>
+          </div>
+
+          <label htmlFor="img" className={`w-[500px] h-[500px] mx-auto bg-[#332F47CC] rounded border border-[#D9C4B2] 
+            font-cfont text-[#C5C1C3] text-l flex items-center justify-center mb-4 ${imagePreview ? 'hidden' : ''}`}>
+            이미지를 업로드하세요.
+            <input id="img" type="file" onChange={handleImageChange} className="hidden" />
+          </label>
+
+          {imagePreview && (
+            <div className="mt-4 relative w-full h-[500px] max-w-[500px] max-h-[500px] mx-auto">
+              <Image 
+                src={imagePreview} 
+                alt="Preview" 
+                className="w-full h-64 object-cover mb-4 border rounded" 
+                layout="fill"
+                objectFit="contain"
+              />
+            </div>
+          )}
+
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+          
+          <button onClick={handleSubmit} className='mt-4 px-4 py-2 bg-[#332F47CC] rounded border border-[#D9C4B2] font-cfont text-[#C5C1C3] text-lg hover:bg-[#D9C4B2CC] hover:text-black'>
+            시작
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
