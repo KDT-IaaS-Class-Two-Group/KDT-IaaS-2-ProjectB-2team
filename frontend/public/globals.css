@@ -34,11 +34,12 @@ body {
 
 @font-face {
   font-family: 'cfont';
-  src: url('/fonts/국립박물관문화재단클래식M.ttf') format('truetype'),
-       url('/fonts/국립박물관문화재단클래식M.otf') format('opentype');
+  src: url('/fonts/Classic_font.ttf') format('truetype'),
+       url('/fonts/Classic_font.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
+
 
 
 code {
