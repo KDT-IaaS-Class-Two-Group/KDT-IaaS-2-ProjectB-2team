@@ -12,7 +12,7 @@ const router = useRouter()
   return (
     <div id="root" className="flex flex-col items-center justify-center h-screen ">
       <div className="relative mb-4">
-      <img src="/images/index.png" alt="description" className="w-1080 h-1075 object-cover" />
+      <img src="/images/index.png" alt="description" className="w-1080 h-screen object-cover" />
       <button onClick={handleStartClick}
       className="absolute top-[787px] left-[611px] 
       px-4 py-2 bg-[#332F47CC] rounded border border-[#D9C4B2] 
