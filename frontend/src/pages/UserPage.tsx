@@ -1,7 +1,5 @@
 import React, { useState ,useContext } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import '../app/globals.css';
 import { UserContext } from '@/components/context';
 
 const UserPage: React.FC = () => {
@@ -46,8 +44,7 @@ const UserPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
 
     if (!inputValue || !selectedOption || selectedOption === '선택' || !image) {
       setErrorMessage('모두 입력하세요.');
@@ -57,7 +54,7 @@ const UserPage: React.FC = () => {
     const formData = new FormData();
     formData.append("nickname",inputValue);
     formData.append("region", selectedOption)
-    if (image) formData.append('image', image);
+    if (image) formData.append('img', image);
 
     try {
       const response = await fetch("http://127.0.0.1:8000/result", {
@@ -67,12 +64,9 @@ const UserPage: React.FC = () => {
       const result = await response.json()
       console.log(result)
       console.log(result.message)
-      // console.log(URL.createObjectURL(image))
 
       if (response.ok) {
-        setUserData({
-          result : result.message
-        });
+        setUserData(result);
         console.log(userData);
         userouter.push('/PreDict')
       } else {
@@ -87,7 +81,7 @@ const UserPage: React.FC = () => {
   return (
     <div id="root" className="flex flex-col items-center justify-center h-screen">
       <div className="relative mb-4">
-        <img src="/images/userpage.png" alt="description" className="w-1080 h-1075 object-cover" />
+        <img src="/images/userpage.png" alt="description" className="w-[1080px] h-[1075px] object-cover" />
 
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center p-4">
           <div className="w-[500px] p-2 mb-4 bg-[#332F47CC] rounded border border-[#D9C4B2] font-cfont text-[#C5C1C3] text-lg flex items-center">
@@ -121,15 +115,14 @@ const UserPage: React.FC = () => {
 
           {imagePreview && (
             <div className="mt-4 relative w-full h-[500px] max-w-[500px] max-h-[500px] mx-auto">
-              <Image 
+              <img 
                 src={imagePreview} 
                 alt="Preview" 
-                className="w-full h-64 object-cover mb-4 border rounded" 
-                layout="fill"
-                objectFit="contain"
+                className="w-full h-full object-contain mb-4 border rounded" 
               />
             </div>
           )}
+
 
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           
