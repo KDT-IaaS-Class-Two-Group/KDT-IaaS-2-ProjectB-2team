@@ -1,9 +1,12 @@
 import React from 'react';
-import '../app/globals.css';
+// import '../app/globals.css';
+import { useRouter } from 'next/router';
 
 const MainPage: React.FC = () => {
+const router = useRouter()
+
   const handleStartClick = () => {
-    window.location.href = '/UserPage';
+      router.push("/UserPage")
   };
 
   return (
