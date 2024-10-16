@@ -6,8 +6,8 @@ import tensorflow as tf
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict,List
 import base64
-
-
+from modules.PPO_loader import run_simulation
+from modules.adjust_populate import preprocess_population_density
 
 
 app = FastAPI()
@@ -53,7 +53,7 @@ app.add_middleware(
 )
 
 # 학습된 모델을 앱 시작 시 한 번만 로드
-model = load_model("./model/M5.keras")
+model = load_model("./modules/model/M5.keras")
 
 # 임시 객체 구조체
 class TempData:
@@ -96,12 +96,18 @@ async def upload_and_predict(
         # print(f"Image Data (binary): {temp_obj.img_data[:10]}... (truncated)")  # 이미지 데이터는 일부만 출력
 
         # 모델 예측 수행
-        response = await model_predict(temp_obj.img_data, model)
+        img_predict = await model_predict(temp_obj.img_data, model)
+        simulate = await run_simulation(
+            preprocess_population_density(region),
+            img_predict)
 
         # M2 함수 호출 (임시 배열을 설정)
-        temp_array_1 = [{} for _ in range(9)]  # 임시 배열 9개 생성
-        temp_array_2 = [{} for _ in range(9)]
-        result = await M2(temp_obj.nickname, response, temp_array_1, temp_array_2)
+        # temp_array_1 = [{} for _ in range(9)]  # 임시 배열 9개 생성
+        # temp_array_2 = [{} for _ in range(9)]
+        # result = await M2(temp_obj.nickname, img_predict, temp_array_1, temp_array_2)
+        
+        
+        
         img_trans =  base64.b64encode(temp_obj.img_data).decode("utf-8")
         # 최종 반환할 결과값
         final_result = {
@@ -109,8 +115,8 @@ async def upload_and_predict(
                 "nickname": temp_obj.nickname,
                 "img": img_trans,  # 이미지 바이너리 데이터 => 디코딩 필요
                 "region": temp_obj.region,
-                "stat": result["stat"],  # 모델 예측 결과
-                "log": result["log"]  # 임시 배열 로그
+                "stat": img_predict,  # 모델 예측 결과
+                "log": simulate  # 임시 배열 로그
             }
         }
 
