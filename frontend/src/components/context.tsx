@@ -2,7 +2,7 @@ import React, { createContext, useState } from 'react';
 
 interface UserData {
   result:{
-    nickName: string;
+    nickname: string;
     region: string;
     img: string;
     stat: {
