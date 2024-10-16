@@ -201,25 +201,32 @@ class CustomSurvivalEnv(gym.Env):
         print(f"에피소드 종료! {self.turns_survived} 턴 생존.")
         print(f"종료 원인: {self.end_reason}")
         print(f"총 획득한 음식: {self.food_acquired}")
+        
 
-if __name__ == "__main__":
-    agent_params = {
-        "species": 0,
-        "attack": 2.5,
-        "defense": 2.0,
-        "accuracy": 80,
-        "weight": 120
-    }
+"""
 
-    env = CustomSurvivalEnv(populationRate=15.5, agent_params=agent_params)
+환경 테스트 코드
 
-    episodes = 1
-    for _ in range(episodes):
-        obs, _ = env.reset()
-        done = False
+"""
 
-        while not done:
-            action = env.action_space.sample()
-            obs, reward, done, _, _ = env.step(action)
+# if __name__ == "__main__":
+#     agent_params = {
+#         "species": 0,
+#         "attack": 2.5,
+#         "defense": 2.0,
+#         "accuracy": 80,
+#         "weight": 120
+#     }
 
-        env.close()
+#     env = CustomSurvivalEnv(populationRate=15.5, agent_params=agent_params)
+
+#     episodes = 1
+#     for _ in range(episodes):
+#         obs, _ = env.reset()
+#         done = False
+
+#         while not done:
+#             action = env.action_space.sample()
+#             obs, reward, done, _, _ = env.step(action)
+
+#         env.close()
