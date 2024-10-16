@@ -25,7 +25,7 @@ async def model_predict(img_data: bytes, model) -> Dict[str, float]:
         predictions = model.predict(image)
 
         # 4. JSON 형식으로 응답
-        response = {class_list[i]: float(predictions[0][i]) for i in range(len(class_list))}
+        response = {class_list[i]: int(predictions[0][i]) for i in range(len(class_list))}
 
         return response
     
@@ -52,7 +52,7 @@ class TempData:
         self.img_data = img_data
         
 # M2 함수 정의
-async def M2(nickname: str, predictions: Dict[str, float], temp_array_1: List, temp_array_2: List) -> Dict:
+async def M2(nickname: str, predictions: Dict[str, int], temp_array_1: List, temp_array_2: List) -> Dict:
     result = {
         "nickname": nickname,
         "stat": predictions,  # M1 모델의 예측 결과
@@ -64,16 +64,6 @@ async def M2(nickname: str, predictions: Dict[str, float], temp_array_1: List, t
 
 # 임시 저장 객체 (예시로 dict 사용)
 temp_storage = {}
-
-# 현재 파일이 실행되는 디렉토리 경로 가져오기
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# 'data' 폴더 하위의 'data.json' 파일 경로 동적으로 생성
-file_path = os.path.join(current_dir, 'data', 'data.json')
-
-# 파일 열기
-with open(file_path, 'r', encoding='utf-8') as file:
-    data = json.load(file)  # JSON 파일을 파싱해서 Python 객체로 변환
 
 @app.post("/result")
 async def upload_and_predict(
