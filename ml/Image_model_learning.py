@@ -2,7 +2,7 @@ import json
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import KFold
-from modules.visulaize_history import visulaize_history
+from modules.visualize.visulaize_history import visulaize_history
 from modules.build_model import build_model
 from modules.preprocess_image import preprocess_image
 from modules.data_generator import data_generator
