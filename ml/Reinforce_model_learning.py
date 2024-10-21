@@ -1,6 +1,6 @@
 import gymnasium as gym
 from stable_baselines3 import PPO
-from modules.reinforce_learning import CustomSurvivalEnv  # 우리가 정의한 환경을 임포트
+from ml.deprecated.reinforce_learning import CustomSurvivalEnv  # 우리가 정의한 환경을 임포트
 import matplotlib.pyplot as plt
 
 # 1. 환경 초기화
