@@ -28,8 +28,16 @@ def model_predict(image_path, model):
         # 4. 모델 예측
         predictions = model.predict(image)
 
-        # 5. JSON 형식으로 응답 생성
-        response = {class_list[i]: float(predictions[0][i]) for i in range(len(class_list))}
+        response = {}
+        for i in range(len(class_list)):
+            pred_value = predictions[0][i]
+
+            # species 값 처리 (0.5 이상은 1로, 그 미만은 0으로)
+            if class_list[i] == 'species':
+                response['species'] = 1 if pred_value >= 0.5 else 0
+            else:
+                response[class_list[i]] = int(round(pred_value, 1))  # 다른 값은 반올림 후 정수 변환
+
         return response
     
     except Exception as e:
