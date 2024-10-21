@@ -2,11 +2,7 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import math
-from colorama import Fore, Style, init
 import json
-
-# Windows 콘솔을 위한 colorama 초기화
-init(autoreset=True)
 
 class CustomSurvivalEnv(gym.Env):
     def __init__(self, populationRate=50, agent_params=None):
@@ -46,12 +42,11 @@ class CustomSurvivalEnv(gym.Env):
 
         weight = self.agent_params["weight"]
 
-        # 초기 체력과 최대 체력 설정
         initial_hp = 100 + min(100, weight * 0.3)
-        self.max_hp = initial_hp  # 최대 체력을 인스턴스 변수에 저장
+        self.max_hp = initial_hp
 
         self.state = {
-            "hp": initial_hp,  # 초기 체력
+            "hp": initial_hp,
             "attack": self.agent_params["attack"],
             "defense": self.agent_params["defense"],
             "accuracy": self.agent_params["accuracy"],
@@ -71,15 +66,14 @@ class CustomSurvivalEnv(gym.Env):
         return np.array(list(self.state.values()), dtype=np.float32), {}
 
     def step(self, action):
-        self.turns_survived += 1  # 턴 증가
-        self.food -= 1  # 식량 감소
-        self.last_action = action  # 액션 기록
+        self.turns_survived += 1  
+        self.food -= 1  
+        self.last_action = action  
 
-        # 보상 초기화
         reward = 0
 
-        # 탐색 행동
-        if action == 0:  # 탐색
+        # ? 탐색 행동
+        if action == 0: 
             success = np.random.rand() > self.calculate_risk_factor(self.populationRate)
             if success:
                 self.handle_exploration_success()
@@ -87,21 +81,19 @@ class CustomSurvivalEnv(gym.Env):
                 self.handle_exploration_failure()
             self.log_event(f"탐색 수행: {'성공' if success else '실패'}")
 
-        # 휴식 행동
-        elif action == 1:  # 휴식
+        # ? 휴식 행동
+        elif action == 1:
             if self.state["hp"] < 100:
                 self.handle_rest()
 
             self.rest_turns += 1
             self.log_event("휴식을 선택했습니다.")
 
-            # 휴식 중 침입 이벤트 발생 가능성
             if self.rest_turns >= 3 or np.random.rand() < 0.4:
                 self.handle_intrusion_event()
                 
-        reward = self.turns_survived * 1.0  # 생존한 일자에 비례한 보상
+        reward = self.turns_survived * 1.0  
         
-        # 식량 보유에 따른 HP 회복 및 감소 처리
         if self.food > 0:
             self.state["hp"] = min(self.state["hp"] + 5, self.max_hp)
             self.log_event(f"식량으로 HP가 5 회복되었습니다. 현재 체력: {self.state['hp']}")
@@ -111,25 +103,20 @@ class CustomSurvivalEnv(gym.Env):
             self.state["hp"] -= hp_loss
             self.log_event(f"식량 부족! HP가 {hp_loss} 감소했습니다.")
 
-        # 종료 조건 체크
         done = self.check_done()
 
-        # 현재 상태 반환
         return np.array(list(self.state.values()), dtype=np.float32), reward, done, False, {}
 
 
 
     def log_event(self, message):
-        """현재 턴의 이벤트를 로그에 저장합니다."""
         day = f"day{self.turns_survived}"
 
-        # 이미 해당 날의 로그가 있다면 이벤트를 리스트에 추가
         for log in self.logs:
             if day in log:
                 log[day].append(message)
                 return
 
-        # 해당 날의 로그가 없으면 새 리스트를 생성하여 추가
         self.logs.append({day: [message]})
 
     def calculate_hp_loss(self):
@@ -152,7 +139,6 @@ class CustomSurvivalEnv(gym.Env):
         self.log_event(f"휴식으로 HP가 1 회복되었습니다. 현재 체력: {self.state['hp']}")
 
     def handle_intrusion_event(self):
-        """위험 요소 침입 처리: 식량 절반 감소 및 방어력 절반만 적용하여 HP 감소."""
         self.food = max(0, self.food // 2)
         damage = max(5, 15 - (self.state["defense"] / 2))
         self.state["hp"] -= damage
@@ -162,20 +148,17 @@ class CustomSurvivalEnv(gym.Env):
         )
 
     def calculate_reward(self):
-        """보상을 계산하고 HP 회복 시 최대 체력을 초과하지 않도록 관리."""
         if self.food > 0:
-            # 현재 체력에 5를 더하되, 최대 체력을 넘지 않도록 제한
             self.state["hp"] = min(self.max_hp, self.state["hp"] + 5)
             self.log_event(f"식량이 있어 HP가 5 증가했습니다. 현재 체력: {self.state['hp']}")
 
         return self.turns_survived
 
     def calculate_risk_factor(self, population_rate):
-        # 인구 밀도가 낮을 때도 지나치게 성공 확률이 높지 않도록 조정
         if population_rate < 50:
-            risk_adjustment = 50 - population_rate  # 인구 밀도가 낮을 때 위험도 증가
-            population_rate += risk_adjustment * 0.5  # 추가적인 위험을 부여
-        return 1 / (1 + math.exp(-0.6 * (population_rate - 50)))  # 조정된 위험 요소 계산
+            risk_adjustment = 50 - population_rate  
+            population_rate += risk_adjustment * 0.5
+        return 1 / (1 + math.exp(-0.6 * (population_rate - 50)))
 
     def check_done(self):
         if self.state["hp"] <= 0:
