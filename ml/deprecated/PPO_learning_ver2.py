@@ -4,7 +4,7 @@ import torch.optim as optim
 import numpy as np
 from torch.distributions import Categorical
 from collections import deque
-from modules.custom_env_ver2 import CustomSurvivalEnv
+from modules.Reinforce_ENV import CustomSurvivalEnv
 
 class ActorCritic(nn.Module):
     def __init__(self, state_size, action_size):

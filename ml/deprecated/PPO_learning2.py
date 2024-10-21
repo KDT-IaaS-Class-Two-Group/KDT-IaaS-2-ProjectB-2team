@@ -6,7 +6,7 @@ import gymnasium as gym
 import numpy as np
 import os
 
-from modules.custom_env_ver2 import CustomSurvivalEnv  # 사용자 정의 환경
+from modules.Reinforce_ENV import CustomSurvivalEnv  # 사용자 정의 환경
 
 torch.autograd.set_detect_anomaly(True)  # 이상 탐지 활성화
 
