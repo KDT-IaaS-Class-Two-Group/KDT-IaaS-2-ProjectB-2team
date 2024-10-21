@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from typing import Dict
 import tensorflow as tf
-from .class_list import class_list # class_list 모듈을 제대로 import해야 함
+from static.class_list import class_list # class_list 모듈을 제대로 import해야 함
 
 # 모델 예측 함수
 async def model_predict(file, model) -> Dict[str, float]:

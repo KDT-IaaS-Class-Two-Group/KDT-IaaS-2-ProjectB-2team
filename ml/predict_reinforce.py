@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from modules.reinforce_learning import CustomSurvivalEnv  # 환경 정의 코드
+from ml.deprecated.reinforce_learning import CustomSurvivalEnv  # 환경 정의 코드
 from models.PPOAgent import PPOAgent  # PPO 에이전트 임포트
 
 def process_image_result(image_result):
