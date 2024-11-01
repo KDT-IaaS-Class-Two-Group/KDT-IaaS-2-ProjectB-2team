@@ -21,9 +21,15 @@ body {
 }
 
 .bg {
-  background-image: url('/path/to/your/image.jpg');
-  background-size: cover;
+  background-image: url('./images/baseImage.png');
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 100vh;
+}
+
+.indexImage{
+  background-image: url("./images/Title.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat
 }
