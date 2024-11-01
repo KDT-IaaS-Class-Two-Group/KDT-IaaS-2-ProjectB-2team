@@ -1,4 +1,4 @@
-import tensorflow as tf
+import onnxruntime as ort
 
 def load_model(model_path: str):
-    return tf.keras.models.load_model(model_path)
+    return ort.InferenceSession(model_path)
