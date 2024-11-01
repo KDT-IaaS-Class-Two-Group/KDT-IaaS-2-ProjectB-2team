@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-model = load_model("./modules/model/M5.keras")
+model = load_model("./modules/model/convertedTensorflowModel.onnx")
 
 class TempData:
     def __init__(self, nickname: str, region: str, img_data: bytes):
@@ -33,14 +33,14 @@ class TempData:
         self.region = region
         self.img_data = img_data
         
-async def M2(nickname: str, predictions: Dict[str, int], temp_array_1: List, temp_array_2: List) -> Dict:
-    result = {
-        "nickname": nickname,
-        "stat": predictions,  # M1 모델의 예측 결과
-        "log": [temp_array_1, temp_array_2]  # 두 개의 임시 배열
-    }
-    print("M2 함수 호출 결과:", result)
-    return result
+# async def M2(nickname: str, predictions: Dict[str, int], temp_array_1: List, temp_array_2: List) -> Dict:
+#     result = {
+#         "nickname": nickname,
+#         "stat": predictions,  # M1 모델의 예측 결과
+#         "log": [temp_array_1, temp_array_2]  # 두 개의 임시 배열
+#     }
+#     print("M2 함수 호출 결과:", result)
+#     return result
 
 temp_storage = {}
 
@@ -76,8 +76,10 @@ async def upload_and_predict(
         return final_result
 
     except HTTPException as e:
+        print(f"Error Occured: {str(e)}")  # HTTPException도 터미널에 출력
         raise e
     except Exception as e:
+        print(f"Error Occured: {str(e)}")  # HTTPException도 터미널에 출력
         raise HTTPException(status_code=500, detail=f"Prediction and result processing failed: {str(e)}")
 
 if __name__ == "__main__":
