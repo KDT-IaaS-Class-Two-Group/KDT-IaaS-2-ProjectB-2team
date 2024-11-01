@@ -2,10 +2,19 @@ import torch
 from stable_baselines3 import PPO
 
 """
-
+    사전에 학습시킨 PPO 모델의 정책 네트워크를 추출해서 저장하는 함수입니다.
+    이 함수를 이용해서 제작된 파일은 별도의 환경 정의 파일과 같이 이용해야 합니다.
+    
     model_path
+        변환할 모델의 경로입니다.
+        
     output_name
+        제작될 모델의 이름입니다.
+        
+    return
+    None
 """
+
 def PPO_model_convert(model_path : str , output_name : str) -> None :
     
     model = PPO.load(model_path)
@@ -32,3 +41,4 @@ if __name__ == "__main__":
     
     model_path = "여기에 변환할 모델의 경로를 입력해주세요"
     output_name = "내보낼 정책 파일의 이름을 입력해주세요"
+    PPO_model_convert(model_path, output_name)
