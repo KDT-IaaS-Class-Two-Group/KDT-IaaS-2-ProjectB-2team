@@ -7,7 +7,9 @@ import "../../public/globals.css"
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <UserProvider>
-      <Component {...pageProps} />
+      <div className='w-screen h-screen bg'>
+        <Component {...pageProps} />
+      </div>
     </UserProvider>
   );
 };
