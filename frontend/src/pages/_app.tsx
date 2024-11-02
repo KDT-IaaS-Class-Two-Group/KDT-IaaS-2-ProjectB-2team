@@ -1,13 +1,18 @@
 // pages/_app.tsx
-import React from 'react';
-import { AppProps } from 'next/app';
-import { UserProvider } from '@/components/context';
-import "../../public/globals.css"
+import React from "react";
+import { AppProps } from "next/app";
+import { UserProvider } from "@/components/context";
+import "../../public/globals.css";
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <UserProvider>
-      <div className='w-screen h-screen bg'>
+      <div
+        className="bg-center bg-no-repeat bg-contain"
+        style={{
+          backgroundImage: "url('/images/baseImage.png')",
+        }}
+      >
         <Component {...pageProps} />
       </div>
     </UserProvider>
