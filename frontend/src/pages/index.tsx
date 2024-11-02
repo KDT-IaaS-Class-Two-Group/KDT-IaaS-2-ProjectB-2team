@@ -5,7 +5,7 @@ const MainPage: React.FC = () => {
   const router = useRouter();
 
   const handleStartClick = () => {
-    router.push("/predict");
+    router.push("/userpage");
   };
 
   return (

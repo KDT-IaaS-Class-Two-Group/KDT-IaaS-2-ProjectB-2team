@@ -68,7 +68,7 @@ const UserPage: React.FC = () => {
       if (response.ok) {
         setUserData(result);
         console.log(userData);
-        userouter.push('/PreDict')
+        userouter.push('/predict')
       } else {
         console.error("서버 오류:", response.statusText);
       }
