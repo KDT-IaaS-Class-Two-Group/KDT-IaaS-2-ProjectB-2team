@@ -11,7 +11,7 @@ const MainPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen mx-4 sm:mx-8 lg:mx-40">
-      <div className="relative w-full h-64 sm:h-72 md:h-96 lg:h-[500px] xl:h-[600px]">
+      <div className="relative w-full max-w-lg h-64 sm:h-72 md:h-96 lg:h-[500px] xl:h-[600px] min-h-[300px]">
         <Image
           src="/images/Title.png"
           alt="Title"
