@@ -32,7 +32,7 @@ class CustomSurvivalEnv(gym.Env):
         self.food_acquired = 0
         self.end_reason = ""
         self.food_depletion_days = 0
-        self.logs = []
+        self.logs = {"log": [], "end_reason": None}  # logs를 객체 형태로 초기화
         self.last_action = None
 
         self.reset()
@@ -60,7 +60,9 @@ class CustomSurvivalEnv(gym.Env):
         self.food_acquired = 0
         self.end_reason = ""
         self.food_depletion_days = 0
-        self.logs = []
+        self.logs = {
+            "log": [],
+            "end_reason": ""}
         self.last_action = None
 
         return np.array(list(self.state.values()), dtype=np.float32), {}
@@ -107,17 +109,17 @@ class CustomSurvivalEnv(gym.Env):
 
         return np.array(list(self.state.values()), dtype=np.float32), reward, done, False, {}
 
-
-
+    
     def log_event(self, message):
         day = f"day{self.turns_survived}"
 
-        for log in self.logs:
+        # logs에 "log"라는 키로 배열 추가
+        for log in self.logs["log"]:
             if day in log:
                 log[day].append(message)
                 return
 
-        self.logs.append({day: [message]})
+        self.logs["log"].append({day: [message]})
 
     def calculate_hp_loss(self):
         base_loss = 10
@@ -163,7 +165,8 @@ class CustomSurvivalEnv(gym.Env):
     def check_done(self):
         if self.state["hp"] <= 0:
             self.determine_end_reason()
-            self.log_event(self.end_reason)
+            # end_reason을 logs 객체에 추가
+            self.logs["end_reason"] = self.end_reason
             return True
         return False
 
