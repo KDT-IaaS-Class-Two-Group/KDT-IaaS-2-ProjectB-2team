@@ -30,7 +30,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     <UserProvider>
       <div className="relative w-screen h-screen">
         <div
-          className={`absolute inset-0 bg-center bg-no-repeat ${
+          className={`absolute -z-10 inset-0 bg-center bg-no-repeat ${
             isSmallViewport ? "bg-auto" : "bg-contain"
           }`}
           style={{
