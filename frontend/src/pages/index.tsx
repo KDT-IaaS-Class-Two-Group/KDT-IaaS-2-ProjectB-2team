@@ -12,14 +12,14 @@ const MainPage: React.FC = () => {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
       {/* 이미지 영역 */}
-      <div className="relative w-full max-w-[600px] h-3/4 flex items-center justify-center">
+      <div className="relative flex items-center justify-center">
         <Image
           src="/images/Title.png"
           alt="Title"
-          width={500}  // 이미지 너비
+          width={500} // 이미지 너비
           height={300} // 이미지 높이
-          style={{ objectFit: "contain" }}
           priority
+          className="h-[60rem] w-[60rem] sm:max-w-[600px] sm:h-3/4 sm:w-full lg:w-full"
         />
       </div>
 
@@ -28,7 +28,8 @@ const MainPage: React.FC = () => {
         <button
           onClick={handleStartClick}
           className="px-5 py-3 bg-[#332F47CC] rounded border border-[#D9C4B2]
-                     font-cfont text-lg text-[#C5C1C3] hover:bg-[#D9C4B2CC] hover:text-black">
+                     font-cfont text-lg text-[#C5C1C3] hover:bg-[#D9C4B2CC] hover:text-black"
+        >
           게임 시작
         </button>
       </div>
