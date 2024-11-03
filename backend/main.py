@@ -7,7 +7,7 @@ from modules.PPO_loader import run_simulation
 from modules.adjust_populate import preprocess_population_density
 from modules.model_loader import load_model
 from modules.Image_model_predict import model_predict
-
+import json
 
 
 
@@ -72,7 +72,7 @@ async def upload_and_predict(
             }
         }
 
-        print(final_result)
+        print(json.dumps(final_result, indent=4, ensure_ascii=False))
         return final_result
 
     except HTTPException as e:
