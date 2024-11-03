@@ -11,12 +11,13 @@ const MainPage: React.FC = () => {
 
   return (
     <>
-      <div className="h-screen relative">
+      <div className="min-h-[400px] min-w-[400px] relative">
         <Image
           src="/images/Title.png"
           alt="Title"
           fill
           style={{ objectFit: "contain" }}
+          priority
         />
         <button
           onClick={handleStartClick}
