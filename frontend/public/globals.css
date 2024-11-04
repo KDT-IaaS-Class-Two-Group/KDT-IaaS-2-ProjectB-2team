@@ -14,8 +14,9 @@ body {
 
 @font-face {
   font-family: 'cfont';
-  src: url('/fonts/Classic_font.ttf') format('truetype'),
-       url('/fonts/Classic_font.otf') format('opentype');
+  src: url('/fonts/MuseumClassicMedium.woff2') format('woff2'),
+       url('/fonts/MuseumClassicMedium.woff') format('woff'),
+       url('/fonts/MuseumClassicMedium.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
