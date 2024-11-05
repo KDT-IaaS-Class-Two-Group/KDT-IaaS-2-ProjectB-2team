@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        'fhd': '1920px',
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
