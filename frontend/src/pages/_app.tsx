@@ -18,10 +18,10 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
 
     // 초기 뷰포트 크기 설정
     handleResize();
-    
+
     // 리사이즈 이벤트 리스너 등록
     window.addEventListener("resize", handleResize);
-    
+
     // 컴포넌트 언마운트 시 리스너 제거
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -38,7 +38,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
           }}
         />
         {/* 반응형 마진 적용 */}
-        <div className="mx-20 md:mx-64 lg:mx-64 xl:mx-80 h-full">
+        <div className="bg-background font-cfont text-foreground mx-4 md:mx-16 lg:mx-32 xl:mx-64 fhd:mx-auto max-w-[1600px]">
           <Component {...pageProps} />
         </div>
       </div>
