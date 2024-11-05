@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { AppProps } from "next/app";
-import { UserProvider } from "@/components/context";
+import { UserProvider } from "../components/hooks/useUserContext";
 import "../../public/globals.css";
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
@@ -37,7 +37,10 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
             backgroundImage: "url('/images/baseImage.png')",
           }}
         />
-        <Component {...pageProps} />
+        {/* 반응형 마진 적용 */}
+        <div className="max-w-5xl mx-20 md:mx-64 lg:mx-64 xl:mx-80 h-full">
+          <Component {...pageProps} />
+        </div>
       </div>
     </UserProvider>
   );
