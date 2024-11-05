@@ -5,10 +5,6 @@ import Image from "next/image";
 const MainPage: React.FC = () => {
   const router = useRouter();
 
-  const handleStartClick = () => {
-    router.push("/userpage");
-  };
-
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
       {/* 이미지 영역 */}
@@ -26,7 +22,7 @@ const MainPage: React.FC = () => {
       {/* 버튼 영역 */}
       <div className="w-4/5 flex justify-end mt-4 md:w-[35%]">
         <button
-          onClick={handleStartClick}
+          onClick={()=>{router.push("/userpage")}}
           className="px-5 py-3 bg-[#332F47CC] rounded border border-[#D9C4B2]
                      font-cfont text-lg text-[#C5C1C3] hover:bg-[#D9C4B2CC] hover:text-black"
         >
