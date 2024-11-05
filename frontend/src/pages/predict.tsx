@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 // import '../app/globals.css';
-import { UserContext } from "@/components/context";
+import { useUserContext } from "@/components/hooks/useUserContext";
 
 const Predict: React.FC = () => {
-  const data = useContext(UserContext); // UserContext에서 데이터 받아오기
+  const data = useUserContext(); // UserContext에서 데이터 받아오기
   if (!data) {
     throw new Error("UserContext must be used within a UserProvider");
   }
