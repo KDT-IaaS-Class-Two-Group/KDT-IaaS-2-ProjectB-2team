@@ -6,7 +6,7 @@ const MainPage: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center">
+    <div className="h-screen flex flex-col items-center justify-center">
       {/* 이미지 영역 */}
       <div className="relative flex items-center justify-center w-full max-w-[1000px]">
         <Image
