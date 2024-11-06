@@ -38,7 +38,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
           }}
         />
         {/* 반응형 마진 적용 */}
-        <div className="mx-20 md:mx-64 lg:mx-64 xl:mx-80  fhd:mx-auto max-w-[1600px] 2xl:mx-[60rem] h-full">
+        <div className="flex justify-center mx-20 md:mx-64 lg:mx-64 xl:mx-80  fhd:mx-auto max-w-[1600px] 2xl:mx-[60rem] h-full">
           <Component {...pageProps} />
         </div>
       </div>
