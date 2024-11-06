@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { ImageUploadPreviewProps } from "./ImageUpload.interface";
 
-
 const ImageUploadPreview: React.FC<ImageUploadPreviewProps> = ({ onImageChange, imagePreview }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -16,7 +15,7 @@ const ImageUploadPreview: React.FC<ImageUploadPreviewProps> = ({ onImageChange, 
     <div className="w-full flex flex-col items-center">
       <div
         onClick={() => fileInputRef.current?.click()}
-        className={`relative w-[500px] h-[500px] bg-[#332F47CC] rounded border border-[#D9C4B2] font-cfont text-[#C5C1C3] flex items-center justify-center cursor-pointer ${
+        className={`relative w-full max-w-[20rem] h-[20rem] bg-[#332F47CC] rounded border border-[#D9C4B2] font-cfont text-[#C5C1C3] flex items-center justify-center cursor-pointer ${
           imagePreview ? "p-0" : "p-4"
         }`}
       >
