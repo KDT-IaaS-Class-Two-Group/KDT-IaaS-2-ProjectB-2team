@@ -14,11 +14,12 @@ const UserPage: React.FC = () => {
   // 이미지 파일과 미리보기 URL을 부모에서 관리
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false); // errorMessage를 boolean으로 변경
 
   // 자식에서 호출될 콜백 함수: 이미지 파일과 미리보기 URL을 설정
   const handleImageChange = (file: File) => {
     setImageFile(file);
+    setErrorMessage(false)
 
     // 미리보기 URL 생성
     const reader = new FileReader();
@@ -32,10 +33,13 @@ const UserPage: React.FC = () => {
     const inputValue = inputRef.current?.value || "";
     const selectedOption = selectRef.current?.value || "";
 
+    // 모든 필드가 입력되지 않은 경우 에러 메시지 표시
     if (!inputValue || !selectedOption || selectedOption === "선택" || !imageFile) {
-      setErrorMessage("모두 입력하세요.");
+      setErrorMessage(true);
       return;
     }
+
+    setErrorMessage(false); // 입력이 완료된 경우 에러 메시지 숨김
 
     const formData = new FormData();
     formData.append("nickname", inputValue);
@@ -51,7 +55,7 @@ const UserPage: React.FC = () => {
 
       if (response.ok) {
         setUserData(result);
-        router.push("/predict");
+        // router.push("/predict");
       } else {
         console.error("서버 오류:", response.statusText);
       }
@@ -60,19 +64,30 @@ const UserPage: React.FC = () => {
     }
   };
 
+  const changeHandler = ()=>{setErrorMessage(false)}
+
+
   return (
-    <div className="max-w-5xl h-full">
-      <div className="h-1/6">
-        <NicknameInput inputRef={inputRef} />
+    <div className="w-full max-w-96 h-full pt-4 sm:pt-32 justify-around flex flex-col">
+      <div className="mb-4">
+        <NicknameInput inputRef={inputRef} changehandler={changeHandler}/>
       </div>
-      <div className="h-1/6">
-        <RegionList selectRef={selectRef} />
+      <div className="mb-4">
+        <RegionList selectRef={selectRef} changeHandler={changeHandler}/>
       </div>
-      <div className="h-3/6">
-        <ImageUploadPreview onImageChange={handleImageChange} imagePreview={imagePreview} /> {/* 콜백과 미리보기 전달 */}
+      <div className="mb-4">
+        <ImageUploadPreview onImageChange={handleImageChange} imagePreview={imagePreview} />
       </div>
-      <div className="h-1/6">
-        <button onClick={handleSubmit}>제출</button>
+      <div className="flex justify-center items-center flex-col">
+        <span className={`text-red-500 min-h-8 ${errorMessage ? "inline" : "hidden"}`}>
+          모두 입력하세요!
+        </span>
+        <button
+          className="mt-4 px-4 py-2 bg-[#332F47CC] rounded border border-[#D9C4B2] font-cfont text-[#C5C1C3] text-lg hover:bg-[#D9C4B2CC] hover:text-black"
+          onClick={handleSubmit}
+        >
+          시작!
+        </button>
       </div>
     </div>
   );
