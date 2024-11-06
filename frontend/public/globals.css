@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+*{
+  margin: 0;
+  padding: 0;
+}
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -33,4 +37,19 @@ body {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat
+}
+
+input {
+  background-color: #332F47CC;
+  color: #C5C1C3;
+  font-family: 'cfont', sans-serif;
+  border-radius: 0.25rem;
+}
+
+input:-webkit-autofill {
+  background-color: #332F47CC !important;
+  color: #C5C1C3 !important;
+  font-family: 'cfont', sans-serif;
+  transition: background-color 0s ease-in-out 0s;
+  box-shadow: 0 0 0px 1000px rgba(51, 47, 71, 0.8) inset;
 }
