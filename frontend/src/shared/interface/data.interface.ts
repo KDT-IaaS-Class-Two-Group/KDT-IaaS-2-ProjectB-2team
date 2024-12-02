@@ -11,19 +11,24 @@ export interface ISubmitData {
 
 //* 서버에서 반환되는 데이터 인터페이스 입니다.
 export interface IResultData {
-  stat: {
-    species : number
-    attack: number;
-    defense: number;
-    accuracy: number;
-    weight: number;
-  },
-  log : {
-    simulate_log : ISimulate_log
-    end_reason : string
-  }
+  stat: IStat,
+  log : ILog
 }
 
+export interface IStat {
+  health : number;
+  species : number;
+  attack: number;
+  defense: number;
+  accuracy: number;
+  weight: number;
+  agility : number
+}
+
+export interface ILog {
+  simulate_log : ISimulate_log
+  end_reason : string
+}
 /**
  * 백엔드 서버에서 강화 학습 모델이 산출해내는 예측치에 대한 인터페이스 입니다. 
  * 객체 내에 key값이 모델이 산출해내는 예측 값 만클 늘어납니다.
