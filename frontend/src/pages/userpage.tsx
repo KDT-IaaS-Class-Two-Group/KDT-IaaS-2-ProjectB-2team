@@ -55,7 +55,8 @@ const UserPage: React.FC = () => {
 
       if (response.ok) {
         setUserData(result);
-        // router.push("/predict");
+        // console.log(result) // ! 콘솔 찍어서 볼 수 있게. 배포 시 삭제 할 것
+        router.push("/predict");
       } else {
         console.error("서버 오류:", response.statusText);
       }
