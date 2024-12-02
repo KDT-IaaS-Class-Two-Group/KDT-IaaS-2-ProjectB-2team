@@ -63,13 +63,11 @@ async def upload_and_predict(
         img_trans =  base64.b64encode(temp_obj.img_data).decode("utf-8")
         
         final_result = {
-            "result": {
-                "nickname": temp_obj.nickname,
-                "img": img_trans,
-                "region": temp_obj.region,
-                "stat": img_predict,
-                "log": simulate
-            }
+            "nickname": temp_obj.nickname,
+            "img": img_trans,
+            "region": temp_obj.region,
+            "stat": img_predict,
+            "log": simulate
         }
 
         print(json.dumps(final_result, indent=4, ensure_ascii=False))
