@@ -1,13 +1,12 @@
 import React from "react";
 import { useUserContext } from "@/components/hooks/useUserContext";
 import StatCard from "@/components/statCard/StatCard";
+import DeathLog from "@/components/DeathLog/DeathLog";
+import Link from "next/link";
 
 const Predict: React.FC = () => {
-  const { userData } = useUserContext(); // useUserContext에서 userData를 가져옵니다.
-
-  const handleSubmit = () => {
-    window.location.href = "/";
-  };
+  const { userData } = useUserContext();
+  console.log(userData);
 
   return (
     <div className="p-4 flex flex-col items-center justify-center relative">
@@ -44,14 +43,18 @@ const Predict: React.FC = () => {
         <div className="w-[464px] bg-[#332F47CC] text-[#C5C1C3] border-[#D9C4B2] border-2 p-4 flex flex-col items-center">
           <h2 className="text-[17px] font-bold mb-4">사망 이력</h2>
           <div className="bg-[#332F47CC] text-[#C5C1C3] border-[#D9C4B2] p-3 mb-4">
-            {/* 여기에 사망 이력 목록 렌더링 코드 추가 */}
+            {userData?.log ? (
+              <DeathLog deathLogProps={userData.log} />
+            ) : (
+              <p className="text-sm text-gray-500">사망 이력이 없습니다.</p>
+            )}
           </div>
-          <button
-            onClick={handleSubmit}
+          <Link
             className="bg-blue-500 text-white py-2 px-4 rounded mt-2 hover:bg-blue-700"
+            href={"/userpage"}
           >
             다시 시작
-          </button>
+          </Link>
         </div>
       </div>
     </div>
