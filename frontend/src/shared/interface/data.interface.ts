@@ -26,8 +26,8 @@ export interface IStat {
 }
 
 export interface ILog {
-  simulate_log : ISimulate_log
-  end_reason : string
+  simulate_log: ISimulate_log[];
+  end_reason: string;
 }
 /**
  * 백엔드 서버에서 강화 학습 모델이 산출해내는 예측치에 대한 인터페이스 입니다. 
