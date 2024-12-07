@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { AppProps } from "next/app";
-import { UserProvider } from "../components/hooks/useUserContext";
+import { UserProvider } from "../hooks/useUserContext";
 import "../../public/globals.css";
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
