@@ -21,24 +21,27 @@ const DeathLog: React.FC<IDeathLog> = ({ deathLogProps }) => {
       <h2 className="text-lg font-semibold text-[#C5C1C3]">생존 기록</h2>
 
       <div className="overflow-scroll flex flex-col gap-2">
-        {currentPageLogs.map((logEntry: object, index: number) =>
-          Object.entries(logEntry).map(([day, events]: [string, string[]]) => (
-            <div
-              key={index}
-              className="border border-[#D9C4B2] p-2 rounded-md bg-[#332F47CC] shadow hover:animate-blink"
+  {currentPageLogs.map((logEntry: object, index: number) =>
+    Object.entries(logEntry).map(([day, events]: [string, string[]]) => (
+      <div
+        key={index}
+        className="border border-[#D9C4B2] p-2 rounded-md bg-[#332F47CC] shadow hover:animate-blink text-white"
+      >
+        <h3 className="text-sm font-bold">{day}</h3>
+        <ul className="list-disc pl-5">
+          {events.map((event: string, eventIndex: number) => (
+            <li
+              key={eventIndex}
+              className="text-sm text-[#C5C1C3]"
             >
-              <h3 className="text-sm font-bold text-[#C5C1C3]">{day}</h3>
-              <ul className="list-disc pl-5">
-                {events.map((event: string, eventIndex: number) => (
-                  <li key={eventIndex} className="text-sm text-[#C5C1C3]">
-                    {event}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        )}
+              {event}
+            </li>
+          ))}
+        </ul>
       </div>
+    ))
+  )}
+</div>
 
       {/* Pagination Controls */}
       <div className="flex justify-between items-center border border-[#D9C4B2] rounded-md p-2">
