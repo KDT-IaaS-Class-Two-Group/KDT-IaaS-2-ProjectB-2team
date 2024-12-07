@@ -8,11 +8,11 @@ const StatCard: React.FC<IStatCard> = ({ userData, stat }) => {
     <div className="flex flex-col items-center w-full">
       {/* 닉네임 및 지역 */}
       <div className="flex w-full mb-2 space-x-2">
-        <div className="flex flex-1 h-[22px] border border-gray-300 items-center rounded">
+        <div className="flex flex-1 h-6 border border-gray-300 items-center rounded">
           <span className="flex-1 text-xs text-center text-[#b5bcc8]">닉네임:</span>
           <span className="flex-1 text-xs text-center text-[#C5C1C3]">{userData.nickname}</span>
         </div>
-        <div className="flex flex-1 h-[22px] border border-gray-300 items-center rounded">
+        <div className="flex flex-1 h-6 border border-gray-300 items-center rounded">
           <span className="flex-1 text-xs text-center text-[#b5bcc8]">지역:</span>
           <span className="flex-1 text-xs text-center text-[#C5C1C3]">{userData.region}</span>
         </div>
