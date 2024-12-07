@@ -1,6 +1,8 @@
 import React from "react";
 import convertKey from "@/modules/convertKey";
 import { IStatCard } from "./StatCard.interface";
+import statTable from "@/shared/StatTable";
+
 
 const StatCard: React.FC<IStatCard> = ({ userData, stat }) => {
   
@@ -26,7 +28,7 @@ const StatCard: React.FC<IStatCard> = ({ userData, stat }) => {
               key={index}
               className="bg-gray-200 text-gray-700 text-center text-xs border border-gray-300 rounded p-1"
             >
-              {convertKey(key)}: {value}
+              {convertKey(key, statTable)}: {value}
             </div>
           ))}
         </div>
