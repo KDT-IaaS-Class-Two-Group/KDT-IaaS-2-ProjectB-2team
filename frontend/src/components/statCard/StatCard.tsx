@@ -2,9 +2,11 @@
 import React from "react";
 import { IStatCard } from "./StatCard.interface";
 
+
+
 const StatCard: React.FC<IStatCard> = ({ userData, stat }) => {
   return (
-    <div className="w-3/4 flex flex-col items-center">
+    <div className="flex flex-col items-center">
       <div className="flex mb-2 space-x-1">
         {/* 닉네임 */}
         <div className="flex w-[97px] h-[22px] border-[#D9C4B2] border-2 items-center">
