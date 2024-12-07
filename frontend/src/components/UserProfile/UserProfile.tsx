@@ -15,7 +15,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, stat }) => {
 
 // ! 랜더링 부분 
   return (
-    <div className="flex justify-center items-center w-full p-4 bg-[#332F47CC] border-[#D9C4B2] border-2 rounded-md mb-4">
+    <div className="flex justify-center items-center w-full p-4 bg-[#332F47CC] border-[#D9C4B2] border rounded-md mb-4">
       {/* 이미지 섹션 */}
       <div className="w-1/5 h-20 mr-4">
         {userData.img ? (
