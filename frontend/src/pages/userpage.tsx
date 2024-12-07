@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { useUserContext } from "@/components/hooks/useUserContext";
+import { useUserContext } from "@/hooks/useUserContext";
 import RegionList from "@/components/RegionList/RegionList";
 import NicknameInput from "@/components/NicknameInput/NicknameInput";
 import ImageUploadPreview from "@/components/ImageUpload/ImageUpload";

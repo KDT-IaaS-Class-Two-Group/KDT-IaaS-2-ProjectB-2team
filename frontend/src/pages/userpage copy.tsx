@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { useUserContext } from "@/components/hooks/useUserContext"; // useUserContext 훅 가져오기
+import { useUserContext } from "@/hooks/useUserContext"; // useUserContext 훅 가져오기
 import RegionList from "@/components/RegionList";
 
 const UserPage: React.FC = () => {
