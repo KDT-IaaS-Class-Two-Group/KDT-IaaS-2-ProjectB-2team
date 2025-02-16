@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-model = load_model("./modules/model/convertedTensorflowModel.onnx")
+model = load_model("./modules/model/ImageModel.onnx")
 
 class TempData:
     def __init__(self, nickname: str, region: str, img_data: bytes):
