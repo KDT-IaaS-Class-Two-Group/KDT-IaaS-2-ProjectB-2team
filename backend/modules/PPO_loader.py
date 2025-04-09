@@ -7,29 +7,33 @@ from modules.Reinforce_ENV import CustomSurvivalEnv
 model_path = os.path.join(os.path.dirname(__file__), 'model', 'ReinforceModel.onnx')
 ort_session = ort.InferenceSession(model_path)
 
-async def run_simulation(population_rate, agent_params, episodes=1):
-    # 환경 재설정
-    env = CustomSurvivalEnv(populationRate=population_rate, agent_params=agent_params)
-
-    # 최종 반환 객체 초기화
+# 시뮬레이션 실행 함수
+async def run_simulation(population_rate, agent_params, episodes=1, use_model=False):
     simulation_result = {
         "simulate_log": [],
         "end_reason": None
     }
 
     for episode in range(episodes):
+        env = CustomSurvivalEnv(populationRate=population_rate, agent_params=agent_params)
         obs, _ = env.reset()
         done = False
 
         while not done:
-            # ONNX 모델 예측 수행 (PyTorch 없이 실행)
-            obs = np.array(obs, dtype=np.float32).reshape(1, -1)  # 입력 데이터 변환
-            inputs = {"obs": obs}  # ONNX 입력 데이터 구조
-            action = ort_session.run(["action"], inputs)[0]  # ONNX 기반 예측
-            
+            obs = np.array(obs, dtype=np.float32).reshape(1, -1)
+
+            if use_model:
+                # ONNX 모델 기반 예측
+                inputs = {"obs": obs}
+                action = ort_session.run(["action"], inputs)[0]
+                if isinstance(action, np.ndarray):
+                    action = int(action.squeeze())  # ndarray → int 변환
+            else:
+                # 환경 내부 정책 기반 랜덤 액션
+                action = env.action_space.sample()
+
             obs, reward, done, _, _ = env.step(action)
 
-        # 에피소드 로그와 종료 이유 추가
         simulation_result["simulate_log"].extend(env.logs["log"])
         simulation_result["end_reason"] = env.logs["end_reason"]
 
