@@ -98,7 +98,7 @@ class CustomSurvivalEnv(gym.Env):
         
         if self.food > 0:
             self.state["hp"] = min(self.state["hp"] + 5, self.max_hp)
-            self.log_event(f"식량으로 HP가 5 회복되었습니다. 현재 체력: {self.state['hp']}")
+            self.log_event(f"식량으로 HP가 5 회복되었습니다. 현재 체력: {self.state['hp']:.1f}")
         else:
             self.food_depletion_days += 1
             hp_loss = self.calculate_hp_loss()
@@ -130,15 +130,15 @@ class CustomSurvivalEnv(gym.Env):
         food_gain = 1 + int(self.populationRate * 0.1)
         self.food += food_gain
         self.food_acquired += food_gain
-        self.log_event(f"탐색 성공! 음식 {food_gain} 획득. 현재 체력: {self.state['hp']}")
+        self.log_event(f"탐색 성공! 음식 {food_gain} 획득. 현재 체력: {self.state['hp']:.1f}")
 
     def handle_exploration_failure(self):
         self.state["hp"] -= max(5, 15 - self.state["defense"])
-        self.log_event(f"탐색 실패! 위험 요소와 전투를 진행해 HP가 감소했습니다. 현재 체력: {self.state['hp']}")
+        self.log_event(f"탐색 실패! 위험 요소와 전투를 진행해 HP가 감소했습니다. 현재 체력: {self.state['hp']:.1f}")
 
     def handle_rest(self):
         self.state["hp"] += 1
-        self.log_event(f"휴식으로 HP가 1 회복되었습니다. 현재 체력: {self.state['hp']}")
+        self.log_event(f"휴식으로 HP가 1 회복되었습니다. 현재 체력: {self.state['hp']:.1f}")
 
     def handle_intrusion_event(self):
         self.food = max(0, self.food // 2)
@@ -146,13 +146,13 @@ class CustomSurvivalEnv(gym.Env):
         self.state["hp"] -= damage
 
         self.log_event(
-            f"위험 요소가 침입했습니다! 식량이 절반으로 줄어듭니다. 남은 식량: {self.food}. 현재 체력: {self.state['hp']}"
+            f"위험 요소가 침입했습니다! 식량이 절반으로 줄어듭니다. 남은 식량: {self.food}. 현재 체력: {self.state['hp']:.1f}"
         )
 
     def calculate_reward(self):
         if self.food > 0:
             self.state["hp"] = min(self.max_hp, self.state["hp"] + 5)
-            self.log_event(f"식량이 있어 HP가 5 증가했습니다. 현재 체력: {self.state['hp']}")
+            self.log_event(f"식량이 있어 HP가 5 증가했습니다. 현재 체력: {self.state['hp']:.1f}")
 
         return self.turns_survived
 
