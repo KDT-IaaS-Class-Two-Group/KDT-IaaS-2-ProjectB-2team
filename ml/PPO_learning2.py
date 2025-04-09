@@ -69,7 +69,7 @@ class PPOAgent:
 
             surr1 = ratios * advantages
             surr2 = torch.clamp(ratios, 1 - self.clip_epsilon, 1 + self.clip_epsilon) * advantages
-            loss = -torch.min(surr1, surr2).mean() + 0.5 * (advantages ** 2).mean() - 0.01 * dist.entropy().mean()
+            loss = -torch.min(surr1, surr2).mean() + 0.5 * (advantages ** 2).mean() - 0.1 * dist.entropy().mean()
 
             loss.backward()
             self.optimizer.step()
@@ -122,4 +122,4 @@ if __name__ == "__main__":
     train(env, agent, save_path="models/ppo_model.pth")
 
     # 저장된 모델 로드 및 테스트
-    # agent.load_model("models/ppo_model.pth")
+    agent.load_model("models/ppo_model.pth")

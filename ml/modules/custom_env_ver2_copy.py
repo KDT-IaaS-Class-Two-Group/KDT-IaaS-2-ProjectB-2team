@@ -75,52 +75,42 @@ class CustomSurvivalEnv(gym.Env):
         self.food -= 1  # 식량 감소
         self.last_action = action  # 액션 기록
 
-        # 보상 초기화
-        reward = 0
-
-        # 탐색 행동
+        # 액션을 기준으로 로그 작성
         if action == 0:  # 탐색
             success = np.random.rand() > self.calculate_risk_factor()
             if success:
                 self.handle_exploration_success()
-                reward += 5  # 탐색 성공 보상
             else:
                 self.handle_exploration_failure()
-                reward -= 5  # 탐색 실패 페널티
             self.log_event(f"탐색 수행: {'성공' if success else '실패'}")
 
-        # 휴식 행동
         elif action == 1:  # 휴식
             if self.state["hp"] < 100:
                 self.handle_rest()
-                reward += 1  # 휴식 보상
-
-            self.rest_turns += 1
+            self.rest_turns += 1  # 휴식 연속 카운트 증가
             self.log_event("휴식을 선택했습니다.")
 
-            # 휴식 중 침입 이벤트 발생 가능성
+            # 휴식 중 침입 이벤트 처리
             if self.rest_turns > 2 and np.random.rand() < 0.3:
                 self.handle_intrusion_event()
-                reward -= 10  # 침입 이벤트 페널티
 
-        # 식량 보유에 따른 HP 회복 및 감소 처리
+        # 식량이 있을 경우 HP 회복
         if self.food > 0:
             self.state["hp"] = min(self.state["hp"] + 5, 100)
             self.log_event(f"식량으로 HP가 5 회복되었습니다. 현재 체력: {self.state['hp']}")
-            reward += 2  # 식량으로 인한 보상
-        else:
+
+        # 식량이 없을 경우 HP 감소 처리
+        if self.food <= 0:
             self.food_depletion_days += 1
             hp_loss = self.calculate_hp_loss()
             self.state["hp"] -= hp_loss
             self.log_event(f"식량 부족! HP가 {hp_loss} 감소했습니다.")
-            reward -= hp_loss  # 식량 부족 페널티
 
-        # 종료 조건 체크
+        # 보상 계산 및 종료 조건 체크
+        reward = self.calculate_reward()
         done = self.check_done()
 
-        # 현재 상태 반환
         return np.array(list(self.state.values()), dtype=np.float32), reward, done, False, {}
-
 
 
     def log_event(self, message):
@@ -202,24 +192,24 @@ class CustomSurvivalEnv(gym.Env):
         print(f"종료 원인: {self.end_reason}")
         print(f"총 획득한 음식: {self.food_acquired}")
 
-if __name__ == "__main__":
-    agent_params = {
-        "species": 0,
-        "attack": 2.5,
-        "defense": 2.0,
-        "accuracy": 80,
-        "weight": 120
-    }
+# if __name__ == "__main__":
+#     agent_params = {
+#         "species": 0,
+#         "attack": 2.5,
+#         "defense": 2.0,
+#         "accuracy": 80,
+#         "weight": 120
+#     }
 
-    env = CustomSurvivalEnv(populationRate=15.5, agent_params=agent_params)
+#     env = CustomSurvivalEnv(populationRate=15.5, agent_params=agent_params)
 
-    episodes = 1
-    for _ in range(episodes):
-        obs, _ = env.reset()
-        done = False
+#     episodes = 1
+#     for _ in range(episodes):
+#         obs, _ = env.reset()
+#         done = False
 
-        while not done:
-            action = env.action_space.sample()
-            obs, reward, done, _, _ = env.step(action)
+#         while not done:
+#             action = env.action_space.sample()
+#             obs, reward, done, _, _ = env.step(action)
 
-        env.close()
+#         env.close()

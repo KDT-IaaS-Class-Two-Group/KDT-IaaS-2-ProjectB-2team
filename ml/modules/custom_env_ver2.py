@@ -2,22 +2,22 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import math
-from colorama import Fore, Style, init
 import json
 
 # Windows 콘솔을 위한 colorama 초기화
-init(autoreset=True)
 
 class CustomSurvivalEnv(gym.Env):
     def __init__(self, populationRate=50, agent_params=None):
         super(CustomSurvivalEnv, self).__init__()
 
+        # 상태 공간 정의: 체력, 공격력, 방어력, 정확도, 체중, 민첩성
         self.observation_space = spaces.Box(
             low=np.array([0, 0, 0, 0, 0, 0], dtype=np.float32),
             high=np.array([100, 10, 10, 100, 200, 10], dtype=np.float32),
             dtype=np.float32
         )
 
+        # 행동 공간 정의: 0 = 탐색, 1 = 휴식
         self.action_space = spaces.Discrete(2)
 
         self.populationRate = populationRate
@@ -38,6 +38,7 @@ class CustomSurvivalEnv(gym.Env):
         self.food_depletion_days = 0
         self.logs = []
         self.last_action = None
+        self.exploration_reward = 0  # 탐험 성공 보상 추적용
 
         self.reset()
 
@@ -48,10 +49,10 @@ class CustomSurvivalEnv(gym.Env):
 
         # 초기 체력과 최대 체력 설정
         initial_hp = 100 + min(100, weight * 0.3)
-        self.max_hp = initial_hp  # 최대 체력을 인스턴스 변수에 저장
+        self.max_hp = initial_hp
 
         self.state = {
-            "hp": initial_hp,  # 초기 체력
+            "hp": initial_hp,
             "attack": self.agent_params["attack"],
             "defense": self.agent_params["defense"],
             "accuracy": self.agent_params["accuracy"],
@@ -67,63 +68,55 @@ class CustomSurvivalEnv(gym.Env):
         self.food_depletion_days = 0
         self.logs = []
         self.last_action = None
+        self.exploration_reward = 0
 
         return np.array(list(self.state.values()), dtype=np.float32), {}
 
     def step(self, action):
-        self.turns_survived += 1  # 턴 증가
-        self.food -= 1  # 식량 감소
-        self.last_action = action  # 액션 기록
+        self.turns_survived += 1
+        self.food -= 1
+        self.last_action = action
 
-        # 액션을 기준으로 로그 작성
         if action == 0:  # 탐색
             success = np.random.rand() > self.calculate_risk_factor()
             if success:
                 self.handle_exploration_success()
+                self.exploration_reward = 10  # 탐험 성공 보상
             else:
                 self.handle_exploration_failure()
+                self.exploration_reward = -5  # 탐험 실패 패널티
             self.log_event(f"탐색 수행: {'성공' if success else '실패'}")
 
         elif action == 1:  # 휴식
-            if self.state["hp"] < 100:
+            if self.state["hp"] < self.max_hp:
                 self.handle_rest()
-            self.rest_turns += 1  # 휴식 연속 카운트 증가
+            self.rest_turns += 1
             self.log_event("휴식을 선택했습니다.")
 
-            # 휴식 중 침입 이벤트 처리
             if self.rest_turns > 2 and np.random.rand() < 0.3:
                 self.handle_intrusion_event()
 
-        # 식량이 있을 경우 HP 회복
         if self.food > 0:
-            self.state["hp"] = min(self.state["hp"] + 5, 100)
+            self.state["hp"] = min(self.state["hp"] + 5, self.max_hp)
             self.log_event(f"식량으로 HP가 5 회복되었습니다. 현재 체력: {self.state['hp']}")
 
-        # 식량이 없을 경우 HP 감소 처리
         if self.food <= 0:
             self.food_depletion_days += 1
             hp_loss = self.calculate_hp_loss()
             self.state["hp"] -= hp_loss
             self.log_event(f"식량 부족! HP가 {hp_loss} 감소했습니다.")
 
-        # 보상 계산 및 종료 조건 체크
         reward = self.calculate_reward()
         done = self.check_done()
 
         return np.array(list(self.state.values()), dtype=np.float32), reward, done, False, {}
 
-
     def log_event(self, message):
-        """현재 턴의 이벤트를 로그에 저장합니다."""
         day = f"day{self.turns_survived}"
-
-        # 이미 해당 날의 로그가 있다면 이벤트를 리스트에 추가
         for log in self.logs:
             if day in log:
                 log[day].append(message)
                 return
-
-        # 해당 날의 로그가 없으면 새 리스트를 생성하여 추가
         self.logs.append({day: [message]})
 
     def calculate_hp_loss(self):
@@ -138,7 +131,8 @@ class CustomSurvivalEnv(gym.Env):
         self.log_event(f"탐색 성공! 음식 {food_gain} 획득. 현재 체력: {self.state['hp']}")
 
     def handle_exploration_failure(self):
-        self.state["hp"] -= max(5, 15 - self.state["defense"])
+        self.food = max(0, self.food - 1)
+        self.state["hp"] -= max(10, 20 - self.state["defense"])
         self.log_event(f"탐색 실패! 위험 요소와 전투를 진행해 HP가 감소했습니다. 현재 체력: {self.state['hp']}")
 
     def handle_rest(self):
@@ -146,23 +140,16 @@ class CustomSurvivalEnv(gym.Env):
         self.log_event(f"휴식으로 HP가 1 회복되었습니다. 현재 체력: {self.state['hp']}")
 
     def handle_intrusion_event(self):
-        """위험 요소 침입 처리: 식량 절반 감소 및 방어력 절반만 적용하여 HP 감소."""
         self.food = max(0, self.food // 2)
         damage = max(5, 15 - (self.state["defense"] / 2))
         self.state["hp"] -= damage
-
-        self.log_event(
-            f"위험 요소가 침입했습니다! 식량이 절반으로 줄어듭니다. 남은 식량: {self.food}. 현재 체력: {self.state['hp']}"
-        )
+        self.log_event(f"위험 요소가 침입했습니다! 식량이 절반으로 줄어듭니다. 남은 식량: {self.food}. 현재 체력: {self.state['hp']}")
 
     def calculate_reward(self):
-        """보상을 계산하고 HP 회복 시 최대 체력을 초과하지 않도록 관리."""
-        if self.food > 0:
-            # 현재 체력에 5를 더하되, 최대 체력을 넘지 않도록 제한
-            self.state["hp"] = min(self.max_hp, self.state["hp"] + 5)
-            self.log_event(f"식량이 있어 HP가 5 증가했습니다. 현재 체력: {self.state['hp']}")
-
-        return self.turns_survived
+        reward = 1  # 기본 생존 보상
+        reward += self.exploration_reward  # 탐험 결과 반영
+        self.exploration_reward = 0  # 리셋
+        return reward
 
     def calculate_risk_factor(self):
         return 1 / (1 + math.exp(-0.6 * (self.populationRate - 50)))
@@ -191,25 +178,25 @@ class CustomSurvivalEnv(gym.Env):
         print(f"에피소드 종료! {self.turns_survived} 턴 생존.")
         print(f"종료 원인: {self.end_reason}")
         print(f"총 획득한 음식: {self.food_acquired}")
+        
+# if __name__ == "__main__":
+#     agent_params = {
+#         "species": 0,
+#         "attack": 2.5,
+#         "defense": 2.0,
+#         "accuracy": 80,
+#         "weight": 120
+#     }
 
-if __name__ == "__main__":
-    agent_params = {
-        "species": 0,
-        "attack": 2.5,
-        "defense": 2.0,
-        "accuracy": 80,
-        "weight": 120
-    }
+#     env = CustomSurvivalEnv(populationRate=15.5, agent_params=agent_params)
 
-    env = CustomSurvivalEnv(populationRate=15.5, agent_params=agent_params)
+#     episodes = 1
+#     for _ in range(episodes):
+#         obs, _ = env.reset()
+#         done = False
 
-    episodes = 1
-    for _ in range(episodes):
-        obs, _ = env.reset()
-        done = False
+#         while not done:
+#             action = env.action_space.sample()
+#             obs, reward, done, _, _ = env.step(action)
 
-        while not done:
-            action = env.action_space.sample()
-            obs, reward, done, _, _ = env.step(action)
-
-        env.close()
+#         env.close()
